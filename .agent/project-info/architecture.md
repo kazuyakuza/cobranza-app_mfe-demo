@@ -2,6 +2,21 @@
 
 > Source of truth: [`brief.md`](brief.md). On conflict, `brief.md` wins.
 
+## Index
+
+- [1. System Context](#1-system-context)
+- [2. Architectural Boundaries (Core Rules)](#2-architectural-boundaries-core-rules)
+- [3. Component Architecture (Planned)](#3-component-architecture-planned)
+- [4. Shell ↔ MFE Contract](#4-shell--mfe-contract)
+  - [4.1 Inputs (Shell → Component)](#41-inputs-shell--component)
+  - [4.2 Events — MFE → Shell](#42-events--mfe--shell-must-implement-via-cobranza-appsmfe-events)
+  - [4.3 Events — Shell → MFE](#43-events--shell--mfe-must-listen)
+- [5. Configurable View Mode (`DemoConfig`)](#5-configurable-view-mode-democonfig)
+- [6. Federation & Hosting](#6-federation--hosting)
+- [7. Design Patterns](#7-design-patterns)
+- [8. Critical Paths](#8-critical-paths)
+- [9. Min-Height Declaration](#9-min-height-declaration)
+
 ## 1. System Context
 
 ```text

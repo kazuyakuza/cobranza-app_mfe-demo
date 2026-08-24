@@ -2,6 +2,20 @@
 
 > Source of truth: [`brief.md`](brief.md). On conflict, `brief.md` wins.
 
+## Index
+
+- [1. Technology Stack](#1-technology-stack)
+- [2. Runtime Requirements](#2-runtime-requirements)
+- [3. Development Setup](#3-development-setup)
+- [4. Federation Configuration](#4-federation-configuration)
+- [5. Dev Ports](#5-dev-ports)
+- [6. Federation Identity / Naming](#6-federation-identity--naming)
+- [7. Technical Constraints](#7-technical-constraints)
+- [8. Related Packages](#8-related-packages)
+- [9. Testing Approach](#9-testing-approach)
+- [10. Code Quality Rules](#10-code-quality-rules-from-kilorules)
+- [11. AI Agent Workflow](#11-ai-agent-workflow)
+
 ## 1. Technology Stack
 
 | Item | Choice | Notes |
