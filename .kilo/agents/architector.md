@@ -13,6 +13,8 @@ permission:
     "wc *": allow
     "findstr *": allow
     "npx jest*": allow
+    "npx vitest*": allow
+    "npx playwright*": allow
     "npm lint*": allow
     "npm build*": allow
     "npm test*": allow
@@ -25,6 +27,7 @@ permission:
     "npm run typecheck*": allow
     "npm run start*": allow
     "npm run serve*": allow
+    "git -C * log*": allow
     "git log*": allow
     "git shortlog*": allow
     "git diff*": allow
@@ -51,6 +54,7 @@ You are an Architector sub-agent. Your role is to analyze a task, research the c
 ## Tools Preference
 
 See .kilo\rules\tool-selection-priority.md.
+Never propose use PowerShell cmds.
 
 ## Context Loading
 
@@ -83,11 +87,21 @@ Also read any files referenced in the task prompt from the caller.
 7. Save to `.kilo/plans/<YYYYMMDD>-<plan-name>.md`.
 8. Verify the plan against the original task. Redo if incorrect.
 
+## Target Implementer: JUNIOR Developer (50% Restriction)
+
+The implementer executing your plan is a **JUNIOR developer under 50% restriction**. It has ZERO authority over scope, architecture, or unrelated files, and only limited latitude for minor local details. Generate the plan accordingly.
+
+- The plan MUST encode all structural, architectural, and scope decisions.
+- Do NOT use vague instructions that require judgment, such as:
+  - "refactor as needed"
+  - "improve performance"
+  - "handle edge cases appropriately"
+  - "choose the best approach"
+  - "optimize where possible"
+- If a choice between trivially equivalent implementations exists, the plan MUST pick one and specify it.
+- The plan MUST NOT be a set of "copy and paste" actions. Details, specification, line codes, code snippets, etc. are okay, but don't be too highly verbose in minor things. Implementer should handle minor things.
+
 ## Boundaries
 
 - Plan only. Do NOT write code files, run git commands, or modify non-.md files.
 - Return the plan for approval. **Do NOT proceed to implementation**.
-
-## Extra
-
-Never propose use PowerShell cmds.

@@ -14,6 +14,8 @@ permission:
     "wc *": allow
     "findstr *": allow
     "npx jest*": allow
+    "npx vitest*": allow
+    "npx playwright*": allow
     "npm lint*": allow
     "npm build*": allow
     "npm test*": allow
@@ -120,6 +122,17 @@ Verify the implementation against the Technical Specification from 4.1a:
 - Run allowed verification commands (npm/npx build/test/lint/typecheck) to confirm front-end code is valid.
 
 Report diffs between the spec and the implementation, plus front-end quality issues, so architector can incorporate them in the overall verification (4.5b).
+
+## Target Implementer: JUNIOR Developer (50% Restriction)
+
+The implementer executing specs you produce (for 4.1a) is a **JUNIOR developer under 50% restriction**. It has ZERO authority over scope, architecture, or unrelated files, and only limited latitude for minor local details. Produce specs accordingly.
+
+- Do NOT leave architectural or behavioral decisions to the implementer.
+- Do NOT use vague instructions like "style appropriately", "handle errors as needed", or "choose a suitable component".
+- Acceptable to leave to the implementer: minor local details only (internal helper variable names, exact wording of non-critical labels).
+- The plan MUST NOT be a set of "copy and paste" actions. Details, specification, line codes, code snippets, etc. are okay, but don't be too highly verbose in minor things. Implementer should handle minor things.
+
+For verification (4.5a), check that the implementer did NOT overstep the 50% restriction on front-end structural decisions.
 
 ## Boundaries
 
