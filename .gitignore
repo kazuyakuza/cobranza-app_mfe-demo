@@ -35,3 +35,8 @@ dist/
 
 # Kilo agent manager
 .kilo/agent-manager.json
+
+# Node / Angular
+node_modules/
+.angular/
+out-tsc/
