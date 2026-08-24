@@ -1,115 +1,203 @@
-# Base Project for AI Agent Driven Development
+# mfe-demo
 
-This project serves as a foundational template for future AI-agent driven development. It is pre-configured with essential rules, workflows, and structures optimized for collaboration between human developers and AI agents (specifically Kilo Code).
+Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company Back-office Shell. Built with Angular 22 and `@angular-architects/native-federation`.
 
-**Attention AI Agents:** Before making any changes, you **must** read and adhere to the guidelines outlined in [`AGENTS.md`](AGENTS.md). This file contains critical information about the project's workflow, rules, and architectural standards.
+It is a **real Native Federation remote** consumed by the Shell during development and kept as a living example for future Company MFEs.
 
-## Compatibility
+> Source of truth: [`.agent/project-info/brief.md`](.agent/project-info/brief.md). On any conflict, `brief.md` wins.
 
-This template was implemented and tested with the **Kilo Code VSCode plugin**.
-Last Kilo Code tested version: **7.4.22**.
-This project should also work with:
+## Purpose
 
-- Kilo Code previous versions
-- **Kilo Code CLI** (command-line interface)
-- Any AI agent manager or similar tool that supports custom sub-agent definitions, rule files, and workflow commands via markdown-based configuration
+`mfe-demo` serves three goals:
 
-The project uses standard Markdown-based configuration (`.kilo/`, `.agent/`) and does not depend on any proprietary format, making it adaptable to other AI-driven development tools.
+1. **Test harness** for the Shell while it is WIP — workspace rows, 50% / 100% sizing, collapse, fullscreen, drag & drop, persistence, and multi-instance.
+2. **Living reference** of how a Company MFE must implement the Shell ↔ MFE contract (Inputs + `@cobranza-apps/mfe-events`).
+3. **Placeholder** that can appear in the Footer config so developers can add modules without waiting for real business MFEs (`mfe-clients`, `mfe-debts`, etc.).
 
-## Prerequisites
+## What It Is Not
 
-- **Kilo Code**: Optimized for the Kilo Code plugin for VSCode, with CLI support. See [compatibility section](#compatibility) for details.
-- **Git**: Ensure your environment is configured for the workflow. See [`how-to-set-up-git.md`](docs/how-to-set-up-git.md).
+- Not a runtime base class or library that other MFEs depend on.
+- Not a business domain module (no clients, debts, bank statements).
+- Not part of the production product UI for end companies (may stay available in non-prod environments).
+- Not a monorepo. This repository contains only the `mfe-demo` remote.
+- Not responsible for workspace layout, drag-and-drop, persistence, auth, or module chrome — those belong to the Shell / `@cobranza-apps/ui`.
 
-## About this Project
+## Status
 
-The primary goal of this repository is to provide a clean, structured starting point for new projects with built-in "AI-Readiness."
+> **Early / greenfield.** The repository is in project-setup phase.
+>
+> - `src/` currently contains only `.gitkeep` (no Angular scaffolding yet).
+> - No `package.json`, `angular.json`, or `federation.config.js` yet.
+> - `.nvmrc` pins Node `22.22.3`.
+>
+> The Quick Start and Federation Configuration sections below describe the **planned** setup. Commands will become available after the Angular + Native Federation scaffolding task is executed.
 
-### Design Principles
+## Tech Stack
 
-- **Foundation**: A structured baseline for new repositories.
-- **AI-Readiness**: Integrated configurations (like `.kilo`, `.agent`, and `.kilocodeignore`) to enable immediate and effective AI agent participation.
-- **Standardization**: Established coding standards, workflows, and documentation practices.
-- **Project Info**: A persistent context and knowledge management system for agents.
+| Item | Choice | Notes |
+| ------ | -------- | ------- |
+| Framework | Angular 22 (standalone components only) | Matches Shell and `@cobranza-apps/ui` major version (currently `22.1.2`) |
+| Micro-frontend | `@angular-architects/native-federation` | Remote configuration; exposes one bootstrap / entry component |
+| Builder | esbuild (Angular application builder) | |
+| UI / Theme | `@cobranza-apps/ui` | Theme SCSS, `cba-*` components, `ModuleHeader` / `ModuleContainer` |
+| Events | `@cobranza-apps/mfe-events` | Typed Shell ↔ MFE event contracts (required) |
+| Domain models | `@cobranza-apps/entities` | Optional; only if needed for type demos |
+| CSS | Bootstrap 5 (peer of UI lib) + UI tokens | No parallel styling |
+| Icons | Font Awesome Free (via UI lib) | |
+| Language | TypeScript 5.x | |
+| Testing | Vitest / Jest + Angular testing utilities | |
+| Node.js | `22.22.3` (pinned in `.nvmrc`) | Use `nvm use` / `fnm use` |
+| Package manager | npm | No global installs |
+
+See [`.agent/project-info/tech.md`](.agent/project-info/tech.md) for the full technical reference.
+
+## Federation Identity
+
+| Concept | Value |
+| --------- | -------- |
+| Repo / app name | `mfe-demo` |
+| Federation remote name | `mfe-demo` (suggested; confirm with Shell) |
+| Exposed module | `./Component` (suggested; confirm with Shell) |
+| `moduleType` string in Shell | `demo` |
+| Config shape | Internal `DemoConfig` / `DemoViewMode` (lives only inside this repo) |
+| npm scope | Optional; not required for Phase 0 if loaded from URL |
+
+## Development Modes
+
+1. **Standalone preview** — `ng serve` runs the app alone with a minimal local host page that simulates Shell Inputs and listens to `mfe:*` events. The preview host allows selecting / injecting different `DemoConfig` values (e.g. a small selector for `view`). Useful for UI work without the full Shell.
+2. **Loaded by Shell** (primary mode) — the Shell loads the remote via Native Federation and injects it into the workspace / fullscreen outlet. Different Footer entries (or `initialData`) drive the different views.
+
+## Dev Ports & CORS
+
+> **TBD.** Dev ports are not yet decided. Once the dev server is configured, this section will document:
+>
+> - The port used by `mfe-demo` standalone preview.
+> - The Shell origin allowed for CORS / federation public path.
+>
+> Federation public path MUST be configured so the remote works when Shell and remote run on different origins / ports in local dev. No port numbers are invented in this document.
+
+## Quick Start
+
+> Commands below are **planned** and will be available after the scaffolding task. They are documented here for reference.
+
+Prerequisites:
+
+- Node.js `22.22.3` (see `.nvmrc`). Run `nvm use` or `fnm use`.
+- npm (no global installs).
+
+```bash
+# Install dependencies (after package.json exists)
+npm install
+
+# Run standalone preview (after Angular + Native Federation scaffolding)
+npm start
+# or
+ng serve
+```
+
+To run loaded by the Shell, start the Shell separately and add a Footer entry with `moduleType: 'demo'`. See the Shell repository for its own run instructions.
+
+## Federation Configuration
+
+> **Pending scaffolding.** A `federation.config.js` (or equivalent Native Federation config) will be created in a future task. Planned shape:
+
+- Remote name: `mfe-demo`
+- Exposed module: `./Component` → standalone `DemoComponent`
+- Public path configured for cross-origin dev with the Shell
+- Shared dependencies aligned with Shell / `@cobranza-apps/ui` (Angular, Bootstrap, etc.)
+
+See [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §6 for the federation & hosting reference.
+
+## Shell ↔ MFE Contract (summary)
+
+The MFE communicates with the Shell ONLY via Angular Inputs and `@cobranza-apps/mfe-events`. It never manipulates DOM outside its own container and never knows about workspace layout.
+
+**Inputs (Shell → component):** `moduleType`, `instanceId`, `size` (`'50%' | '100%'`), `isCollapsed`, `isFullscreen`, `data` (opaque `Record<string, unknown>`), and optional pixel-size / minHeight inputs.
+
+**Events MFE → Shell:** `mfe:module-ready`, `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:module-error`, and optionally `mfe:request-add-module`.
+
+**Events Shell → MFE (listen, filter by `instanceId`):** `shell:module-state`, `shell:visibility-changed`, `shell:theme-changed`.
+
+Full tables and critical paths: [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §4 and §8.
+
+## View Modes (`DemoConfig`)
+
+The Shell transports opaque configuration through the `data` Input. `mfe-demo` interprets it internally as `DemoConfig` (this type lives only inside this repo; the Shell only sees `Record<string, unknown>`):
+
+```ts
+type DemoViewMode = 'table' | 'create-form' | 'profile';
+
+interface DemoConfig {
+  view?: DemoViewMode;        // default: 'table'
+  title?: string;             // pushed via mfe:update-header on init
+  profile?: Record<string, unknown>; // mock data when view === 'profile'
+  tableRows?: number;         // mock rows when view === 'table'
+}
+```
+
+Example Footer entries (Shell side):
+
+```ts
+{ moduleType: 'demo', label: 'Demo – Tabla',  config: { view: 'table' } },
+{ moduleType: 'demo', label: 'Demo – Alta',   config: { view: 'create-form', title: 'Alta simulada' } },
+{ moduleType: 'demo', label: 'Demo – Perfil', config: { view: 'profile', title: 'Cliente demo', profile: { nombre: 'Juan Pérez', dni: '30111222', saldo: 15000 } } }
+```
+
+Details: [`.agent/project-info/brief.md`](.agent/project-info/brief.md) §3.6 and [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §5.
+
+## Related Packages
+
+| Package | Usage |
+| -------- | ----- |
+| `@cobranza-apps/ui` | Theme SCSS, `cba-*` components, `ModuleHeader` / `ModuleContainer`, core components. |
+| `@cobranza-apps/mfe-events` | Typed Shell ↔ MFE event contracts (required). |
+| `@cobranza-apps/entities` | Domain models (optional; only if needed for view type examples). |
+
+Always review and follow each lib's documentation when integrating.
 
 ## Project Structure
 
-Understanding the purpose of the configuration directories is key to effective development:
-
-- [`.agent/`](.agent/): Stores project-specific agent context. Includes [`.agent/project-info/`](.agent/project-info/) for persistent project knowledge (`brief.md`, `product.md`, `context.md`, `architecture.md`, `tech.md`), the [`.agent/todos/`](.agent/todos/) directory for task tracking, local rules, and the [`project-structure.md`](.agent/project-structure.md) map.
-- [`.kilo/`](.kilo/): The operational core of the AI integration. Contains custom [`.kilo/agents/`](.kilo/agents/) (Architector, Implementer, Code Reviewer, Docs Specialist, etc.), global [`.kilo/rules/`](.kilo/rules/) (19 rule files), standardized [`.kilo/commands/`](.kilo/commands/) (workflows like the Critical Workflow), [`.kilo/modes/`](.kilo/modes/) for agent mode overrides, and the [`.kilo/plans/`](.kilo/plans/) directory where agents store detailed implementation plans.
-- [`.kilocodeignore`](.kilocodeignore): Controls which files are excluded from codebase indexing, skipping lock files, dependency directories, build outputs, and binary assets.
-
-## The Critical Workflow
-
-The project follows a standardized process for task execution, ensuring systematic progress from analysis to deployment. Each step is handled by a dedicated sub-agent:
-
-```mermaid
-graph TD
-    Start((Start)) --> Origin{1. Task Origin}
-    Origin -- Chat --> CreateTodo[Create TODO file]
-    Origin -- TODO File --> GitSetup["2. Git Feature Branch Setup<br/><small>[Implementer]</small>"]
-    CreateTodo --> GitSetup
-    GitSetup --> VersionUpdate["3. Version Update<br/><small>[Implementer]</small>"]
-    VersionUpdate --> Execution[Task Execution Loop]
-    subgraph ExecutionProcess [4. Task Execution]
-        Execution --> FECheck1{Front-end task?}
-        FECheck1 -- Yes --> FESpec["4.1a Front-end Spec<br/><small>[Frontend Specialist]</small>"]
-        FECheck1 -- No --> ImplPlan
-        FESpec --> ImplPlan["4.1b Implementation Plan<br/><small>[Architector]</small>"]
-        ImplPlan --> Implementation["4.2 Implementation<br/><small>[Implementer]</small>"]
-        Implementation --> CodeReview["4.3 Code Review<br/><small>[Code Reviewer & Simplifier]</small>"]
-        CodeReview -- Fixes Needed --> Fixes["4.3-fix Apply Fixes<br/><small>[Implementer]</small>"]
-        Fixes -- Re-review --> CodeReview
-        CodeReview -- Approved --> Documentation["4.4 Documentation<br/><small>[Docs Specialist]</small>"]
-        Documentation --> FECheck2{Front-end task?}
-        FECheck2 -- Yes --> FEVerify["4.5a Front-end Verify<br/><small>[Frontend Specialist]</small>"]
-        FECheck2 -- No --> OverallCheck
-        FEVerify --> OverallCheck["4.5b Overall Adherence<br/><small>[Architector]</small>"]
-        OverallCheck --> TaskCompletion["4.6 Task Completion<br/><small>[Implementer]</small>"]
-    end
-    TaskCompletion -- More Items --> Execution
-    TaskCompletion -- All Items Done --> TodoCompletion["5. TODO File Completion<br/><small>[Implementer]</small>"]
-```
-
-For full details, see [`critical-workflow.md`](.kilo/commands/critical-workflow.md).
-
-## How to Start a Task
-
-To initiate work with an AI agent, use one of the following copy-paste friendly commands in the chat.
-
-> **Note on Project Info:** When cloning this template for a new project, the Project Info initialization workflow will trigger automatically. The file `.agent/project-info/brief.md` defines the project's core requirements and scope — AI agents rely on this for context across sessions. To initialize, run `/critical-workflow` and ask to "initialize project info". See [`.kilo/commands/project-info-init.md`](.kilo/commands/project-info-init.md) for details. If the project brief is not defined, agents may produce work that does not align with your goals.
-
-### Option 1: Using a TODO File (Recommended)
-
-1. Create a new file named `YYYYMMDD-todo-X.md` inside a date-specific subdirectory under `.agent/todos/` (e.g., `.agent/todos/20260602/20260602-todo-1.md`).
-2. Populate it using one of the [recommended TODO file formats](docs/how-to-write-todo-files.md).
-3. Paste the following into the chat:
+Planned `src/` layout (after scaffolding):
 
 ```text
-full read @AGENTS.md & follow /critical-workflow
-do @/.agent/todos/<YYYYMMDD>/<YYYYMMDD>-todo-<number>.md
+mfe-demo/
+├── src/
+│   ├── app/
+│   │   ├── demo/                # main exposed component + views
+│   │   ├── core/                # optional event-helper wrappers
+│   │   └── app.config.ts
+│   ├── bootstrap.ts             # federation bootstrap if required
+│   ├── index.html
+│   └── styles.scss              # imports @cobranza-apps/ui theme
+├── federation.config.js         # (pending) Native Federation config
+├── public/
+├── package.json                 # (pending)
+├── angular.json                 # (pending)
+├── tsconfig*.json               # (pending)
+├── .nvmrc                       # Node 22.22.3
+├── README.md
+└── docs/                        # optional short USAGE for agents
 ```
 
-### Option 2: Direct Chat Request
+Full architecture and component layout: [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §3.
 
-If you have a quick request, use this template:
+## Documentation & Project Info
 
-```text
-full read @AGENTS.md & follow /critical-workflow
-do [Your specific task or request here]
-```
+- [`.agent/project-info/brief.md`](.agent/project-info/brief.md) — core requirements and scope (source of truth).
+- [`.agent/project-info/product.md`](.agent/project-info/product.md) — product / UX reference.
+- [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) — system architecture, contract, critical paths.
+- [`.agent/project-info/tech.md`](.agent/project-info/tech.md) — stack, setup, constraints, tooling.
+- [`.agent/project-info/context.md`](.agent/project-info/context.md) — current state and work focus.
+- [`.agent/project-info/instructions.md`](.agent/project-info/instructions.md) — project-info instructions for agents.
+- [`.agent/WORKFLOWS.md`](.agent/WORKFLOWS.md) — project workflows.
+- [`.kilo/commands/critical-workflow.md`](.kilo/commands/critical-workflow.md) — critical workflow reference.
 
-## AI Agent Plans
+## For AI Agents
 
-The critical workflow requires the AI to generate detailed implementation plans for each task. The [Architector sub-agent](.kilo/agents/architector.md) handles analysis and planning (step 4.1b), while the [Implementer sub-agent](.kilo/agents/implementer.md) executes the plan (step 4.2). A [Code Reviewer](.kilo/agents/code-reviewer.md) and [Code Simplifier](.kilo/agents/code-simplifier.md) validate quality, a [Docs Specialist](.kilo/agents/docs-specialist.md) maintains documentation, and a [Frontend Specialist](.kilo/agents/frontend-specialist.md) produces front-end specs (4.1a) and verifies front-end implementations (4.5a) for front-end related tasks.
+All agents working on this project MUST adhere to the workflows and rules outlined in [`AGENTS.md`](AGENTS.md).
 
-The AI agent will ask for your approval before proceeding with plans. To skip approval prompts, include in the TODO file or chat request:
+Before starting any task:
 
-```text
-"Don't request me to approve plans"
-```
-
----
-
-*Note: This workflow is actively maintained and updated to improve stability and introduce new features.*
+1. Read [`AGENTS.md`](AGENTS.md) — primary source of instructions for agents.
+2. Follow the procedures defined in [`.agent/WORKFLOWS.md`](.agent/WORKFLOWS.md), especially the [Critical Workflow](.kilo/commands/critical-workflow.md).
+3. Read [`.agent/project-info/context.md`](.agent/project-info/context.md) for the current project state.
