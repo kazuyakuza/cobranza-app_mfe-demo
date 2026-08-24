@@ -2,35 +2,26 @@
 
 Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company Back-office Shell. Built with Angular 22 and `@angular-architects/native-federation`.
 
-It is a **real Native Federation remote** consumed by the Shell during development and kept as a living example for future Company MFEs.
-
 > Source of truth: [`.agent/project-info/brief.md`](.agent/project-info/brief.md). On any conflict, `brief.md` wins.
 
 ## Purpose
 
-`mfe-demo` serves three goals:
-
-1. **Test harness** for the Shell while it is WIP — workspace rows, 50% / 100% sizing, collapse, fullscreen, drag & drop, persistence, and multi-instance.
-2. **Living reference** of how a Company MFE must implement the Shell ↔ MFE contract (Inputs + `@cobranza-apps/mfe-events`).
-3. **Placeholder** that can appear in the Footer config so developers can add modules without waiting for real business MFEs (`mfe-clients`, `mfe-debts`, etc.).
+1. **Test harness** for the Shell while it is WIP — workspace rows, sizing, collapse, fullscreen, drag & drop, persistence, and multi-instance.
+2. **Living reference** for the Shell ↔ MFE contract (Inputs + `@cobranza-apps/mfe-events`).
+3. **Placeholder** that can appear in the Footer config so developers can add modules without waiting for real business MFEs.
 
 ## What It Is Not
 
-- Not a runtime base class or library that other MFEs depend on.
-- Not a business domain module (no clients, debts, bank statements).
+- Not a runtime base class, library, or business domain module (no clients, debts, bank statements).
 - Not part of the production product UI for end companies (may stay available in non-prod environments).
 - Not a monorepo. This repository contains only the `mfe-demo` remote.
 - Not responsible for workspace layout, drag-and-drop, persistence, auth, or module chrome — those belong to the Shell / `@cobranza-apps/ui`.
 
 ## Status
 
-> **Early / greenfield.** The repository is in project-setup phase.
+> **Early / greenfield.** `src/` currently contains only `.gitkeep`; there is no `package.json`, `angular.json`, or `federation.config.js` yet. `.nvmrc` pins Node `22.22.3`.
 >
-> - `src/` currently contains only `.gitkeep` (no Angular scaffolding yet).
-> - No `package.json`, `angular.json`, or `federation.config.js` yet.
-> - `.nvmrc` pins Node `22.22.3`.
->
-> The Quick Start and Federation Configuration sections below describe the **planned** setup. Commands will become available after the Angular + Native Federation scaffolding task is executed.
+> The Quick Start and Federation Configuration sections describe the **planned** setup and will become available after the Angular + Native Federation scaffolding task.
 
 ## Tech Stack
 
@@ -51,6 +42,8 @@ It is a **real Native Federation remote** consumed by the Shell during developme
 
 See [`.agent/project-info/tech.md`](.agent/project-info/tech.md) for the full technical reference.
 
+Related packages: `@cobranza-apps/ui` (theme and components), `@cobranza-apps/mfe-events` (required event contracts), and optionally `@cobranza-apps/entities`.
+
 ## Federation Identity
 
 | Concept | Value |
@@ -69,16 +62,9 @@ See [`.agent/project-info/tech.md`](.agent/project-info/tech.md) for the full te
 
 ## Dev Ports & CORS
 
-> **TBD.** Dev ports are not yet decided. Once the dev server is configured, this section will document:
->
-> - The port used by `mfe-demo` standalone preview.
-> - The Shell origin allowed for CORS / federation public path.
->
-> Federation public path MUST be configured so the remote works when Shell and remote run on different origins / ports in local dev. No port numbers are invented in this document.
+> **TBD.** This section will document the standalone preview port and the Shell origin allowed for CORS / federation public path once the dev server is configured. No port numbers are invented here.
 
 ## Quick Start
-
-> Commands below are **planned** and will be available after the scaffolding task. They are documented here for reference.
 
 Prerequisites:
 
@@ -95,28 +81,28 @@ npm start
 ng serve
 ```
 
-To run loaded by the Shell, start the Shell separately and add a Footer entry with `moduleType: 'demo'`. See the Shell repository for its own run instructions.
+To run inside the Shell, start the Shell separately and add a Footer entry with `moduleType: 'demo'`. See the Shell repository for its run instructions.
 
 ## Federation Configuration
 
-> **Pending scaffolding.** A `federation.config.js` (or equivalent Native Federation config) will be created in a future task. Planned shape:
+> **Pending scaffolding.** Planned `federation.config.js` shape:
 
 - Remote name: `mfe-demo`
 - Exposed module: `./Component` → standalone `DemoComponent`
 - Public path configured for cross-origin dev with the Shell
-- Shared dependencies aligned with Shell / `@cobranza-apps/ui` (Angular, Bootstrap, etc.)
+- Shared dependencies aligned with Shell / `@cobranza-apps/ui`
 
 See [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §6 for the federation & hosting reference.
 
 ## Shell ↔ MFE Contract (summary)
 
-The MFE communicates with the Shell ONLY via Angular Inputs and `@cobranza-apps/mfe-events`. It never manipulates DOM outside its own container and never knows about workspace layout.
+The MFE communicates with the Shell only via Angular Inputs and `@cobranza-apps/mfe-events`. It never manipulates DOM outside its own container and never knows about workspace layout.
 
-**Inputs (Shell → component):** `moduleType`, `instanceId`, `size` (`'50%' | '100%'`), `isCollapsed`, `isFullscreen`, `data` (opaque `Record<string, unknown>`), and optional pixel-size / minHeight inputs.
-
-**Events MFE → Shell:** `mfe:module-ready`, `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:module-error`, and optionally `mfe:request-add-module`.
-
-**Events Shell → MFE (listen, filter by `instanceId`):** `shell:module-state`, `shell:visibility-changed`, `shell:theme-changed`.
+| Direction | Channel | Details |
+| --------- | ------- | ------- |
+| Shell → MFE | Component Inputs | `moduleType`, `instanceId`, `size`, `isCollapsed`, `isFullscreen`, `data`, optional pixel-size / minHeight inputs. |
+| MFE → Shell | `@cobranza-apps/mfe-events` | `mfe:module-ready`, `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:module-error`, optionally `mfe:request-add-module`. |
+| Shell → MFE | `@cobranza-apps/mfe-events` | `shell:module-state`, `shell:visibility-changed`, `shell:theme-changed` (filter by `instanceId`). |
 
 Full tables and critical paths: [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §4 and §8.
 
@@ -145,41 +131,31 @@ Example Footer entries (Shell side):
 
 Details: [`.agent/project-info/brief.md`](.agent/project-info/brief.md) §3.6 and [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §5.
 
-## Related Packages
-
-| Package | Usage |
-| -------- | ----- |
-| `@cobranza-apps/ui` | Theme SCSS, `cba-*` components, `ModuleHeader` / `ModuleContainer`, core components. |
-| `@cobranza-apps/mfe-events` | Typed Shell ↔ MFE event contracts (required). |
-| `@cobranza-apps/entities` | Domain models (optional; only if needed for view type examples). |
-
-Always review and follow each lib's documentation when integrating.
-
 ## Project Structure
 
 Planned `src/` layout (after scaffolding):
 
 ```text
-mfe-demo/
-├── src/
-│   ├── app/
-│   │   ├── demo/                # main exposed component + views
-│   │   ├── core/                # optional event-helper wrappers
-│   │   └── app.config.ts
-│   ├── bootstrap.ts             # federation bootstrap if required
-│   ├── index.html
-│   └── styles.scss              # imports @cobranza-apps/ui theme
-├── federation.config.js         # (pending) Native Federation config
-├── public/
-├── package.json                 # (pending)
-├── angular.json                 # (pending)
-├── tsconfig*.json               # (pending)
-├── .nvmrc                       # Node 22.22.3
-├── README.md
-└── docs/                        # optional short USAGE for agents
+src/
+├── app/
+│   ├── demo/        # main exposed component + views
+│   ├── core/        # optional event-helper wrappers
+│   └── app.config.ts
+├── bootstrap.ts     # federation bootstrap if required
+├── index.html
+└── styles.scss      # imports @cobranza-apps/ui theme
+
+federation.config.js # Native Federation config (pending)
+public/
+package.json         # (pending)
+angular.json         # (pending)
+tsconfig*.json       # (pending)
+.nvmrc               # Node 22.22.3
+README.md
+docs/                # optional short USAGE for agents
 ```
 
-Full architecture and component layout: [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §3.
+See [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §3 for the full architecture and component layout.
 
 ## Documentation & Project Info
 
@@ -194,10 +170,4 @@ Full architecture and component layout: [`.agent/project-info/architecture.md`](
 
 ## For AI Agents
 
-All agents working on this project MUST adhere to the workflows and rules outlined in [`AGENTS.md`](AGENTS.md).
-
-Before starting any task:
-
-1. Read [`AGENTS.md`](AGENTS.md) — primary source of instructions for agents.
-2. Follow the procedures defined in [`.agent/WORKFLOWS.md`](.agent/WORKFLOWS.md), especially the [Critical Workflow](.kilo/commands/critical-workflow.md).
-3. Read [`.agent/project-info/context.md`](.agent/project-info/context.md) for the current project state.
+All agents MUST follow the workflows and rules in [`AGENTS.md`](AGENTS.md), the procedures in [`.agent/WORKFLOWS.md`](.agent/WORKFLOWS.md) (especially the [Critical Workflow](.kilo/commands/critical-workflow.md)), and read [`.agent/project-info/context.md`](.agent/project-info/context.md) for the current project state before starting any task.
