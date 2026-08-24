@@ -38,11 +38,16 @@ Planned setup steps (to be executed in a future TODO, NOT in this task):
 6. Create standalone preview host page to simulate Shell Inputs / events.
 7. Configure public path / CORS for cross-origin dev with the Shell.
 
+Dev modes:
+
+1. **Standalone preview** — `ng serve` with a minimal local host page that simulates Shell Inputs and listens to `mfe:*` events; allows selecting / injecting different `DemoConfig` values.
+2. **Loaded by Shell** — primary mode; Shell loads the remote via Native Federation into the workspace / fullscreen outlet; Footer entries / `initialData` drive the views.
+
+Tooling: Angular CLI, esbuild, Native Federation, Bootstrap 5 + UI tokens.
+
 ## 4. Federation Configuration
 
-- **Remote name:** `mfe-demo` (suggested).
-- **Exposed module:** `./Component` (suggested; confirm with Shell).
-- **Public path:** configured so the remote works when Shell and remote run on different origins/ports.
+See `architecture.md` §6 for remote name, exposed module, and public-path configuration.
 
 ## 5. Dev Ports
 
@@ -58,17 +63,11 @@ Planned setup steps (to be executed in a future TODO, NOT in this task):
 | npm scope (if published) | optional; not required for Phase 0 if loaded from URL |
 | Config shape | Internal `DemoConfig` / `DemoViewMode` (lives only inside this repo) |
 
+Federation naming details (remote name, exposed module, public path) live in `architecture.md` §6.
+
 ## 7. Technical Constraints
 
-- Angular **22** standalone components only (no NgModules). Match Shell / `@cobranza-apps/ui` major version `22.1.2`.
-- Never manipulate DOM outside the MFE's own container.
-- Never know about workspace layout, rows, drag-and-drop, or persistence.
-- Communicate with the Shell ONLY via `@cobranza-apps/mfe-events` + Angular Inputs.
-- UI language: Spanish only (no i18n). Desktop only (no mobile).
-- Do not re-implement ModuleHeader, drag handle, size toggle, collapse, remove, or fullscreen chrome (owned by Shell / UI lib).
-- Do not change `@cobranza-apps/mfe-events` for `DemoConfig`; keep `data` / `initialData` as opaque `Record<string, unknown>`.
-- No real BFF / API calls in Phase 0 (mocks only if needed).
-- No business domain logic, no auth/login (owned by `mfe-auth` + Shell).
+See `architecture.md` §2 for architectural boundaries. Technical constraints specific to this repo: Angular 22 standalone only, Spanish UI, desktop only, no real API calls, no i18n.
 
 ## 8. Related Packages
 
@@ -99,14 +98,7 @@ Always review and follow each lib's documentation when integrating.
 - No magic numbers; use named constants.
 - Newline characters (not literal `\n`) in all file writes.
 
-## 11. Tooling Patterns
-
-- **Angular CLI** for scaffolding / serving / building.
-- **esbuild** as the application builder.
-- **Native Federation** (`@angular-architects/native-federation`) for remote configuration.
-- **Bootstrap 5 + UI tokens** for styling; no parallel design system.
-
-## 12. AI Agent Workflow
+## 11. AI Agent Workflow
 
 - Follow `AGENTS.md` and `.agent/WORKFLOWS.md` at the start of every task.
 - Critical Workflow: `.kilo/commands/critical-workflow.md`.

@@ -5,17 +5,9 @@
 ## 1. System Context
 
 ```text
-+-------------------+        Native Federation (dynamic import)        +-------------------+
-|  Back-office Shell| --------------------------------------------------> |   mfe-demo (remote)|
-|  (host / workspace)|<------------------- mfe:* events ------------------|   Angular 22 remote|
-|  @cobranza-apps/ui |------------------- shell:* events ----------------->|   standalone comp. |
-+-------------------+                                                          +-------------------+
-        |                                                                 relies on
-        |  consumes                                                       @cobranza-apps/ui
-        v                                                                 @cobranza-apps/mfe-events
-  @cobranza-apps/mfe-events                                               @cobranza-apps/entities (optional)
-  @cobranza-apps/ui
-  @cobranza-apps/entities
+- Shell (host) loads `mfe-demo` (remote) via Native Federation (dynamic import).
+- `mfe:*` / `shell:*` events flow through `@cobranza-apps/mfe-events`.
+- Remote depends on `@cobranza-apps/ui`, `@cobranza-apps/mfe-events`, and optionally `@cobranza-apps/entities`.
 ```
 
 `mfe-demo` is a **remote** loaded by the Shell. It is NOT a host, NOT a library, NOT a monorepo. It renders only inside its own container body (below the Shell-owned `ModuleHeader`).
@@ -43,9 +35,8 @@ src/app/
 src/bootstrap.ts             # federation bootstrap if required
 src/index.html
 src/styles.scss              # imports @cobranza-apps/ui theme
+# standalone component; sub-views may be template branches
 ```
-
-Single clear entry component is preferred; sub-views may be plain components or template branches. Keep the surface small.
 
 ## 4. Shell ↔ MFE Contract
 
@@ -104,20 +95,6 @@ interface DemoConfig {
 }
 ```
 
-Component usage:
-
-```ts
-@Input() data: Record<string, unknown> | undefined;
-
-get config(): DemoConfig {
-  return (this.data ?? {}) as DemoConfig;
-}
-
-get view(): DemoViewMode {
-  return this.config.view ?? 'table';
-}
-```
-
 Data sources: Shell Footer `WorkspaceModuleDefinition.config` → copied to `data`; workspace `WorkspaceModule.data` persisted/restored; Shell → MFE `data` Input; `mfe:request-add-module` `initialData`. The Shell does NOT interpret `data` content.
 
 ## 6. Federation & Hosting
@@ -126,9 +103,6 @@ Data sources: Shell Footer `WorkspaceModuleDefinition.config` → copied to `dat
 - **Exposed module:** `./Component` (suggested; confirm with Shell).
 - **Exposed component:** standalone, accepts Inputs from §4.1.
 - **Public path / CORS:** configure federation public path so the remote works when Shell and remote run on different origins/ports in local dev. Document expected ports in README.
-- **Dev modes:**
-  1. **Standalone preview** — `ng serve` with a minimal local host page that simulates Shell Inputs and listens to `mfe:*` events; allows selecting / injecting different `DemoConfig` values.
-  2. **Loaded by Shell** — primary mode; Shell loads the remote via Native Federation into the workspace / fullscreen outlet; Footer entries / `initialData` drive the views.
 
 ## 7. Design Patterns
 

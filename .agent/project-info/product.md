@@ -4,11 +4,7 @@
 
 ## 1. Problem Definition
 
-The Company Back-office Shell is a workspace-style host that loads multiple Micro-frontends (MFEs) via Native Federation. While the Shell is Work-In-Progress, there is no real business MFE available to:
-
-- Validate the Shell ↔ MFE contract (Inputs, events, multi-instance, sizing, fullscreen, persistence).
-- Let developers add modules to the Footer config without waiting for real business MFEs.
-- Show future MFE authors a concrete, working reference of the expected contract.
+The Company Back-office Shell is a workspace-style host that loads multiple Micro-frontends (MFEs) via Native Federation. While the Shell is Work-In-Progress, there is no real business MFE available to validate the Shell ↔ MFE contract (Inputs, events, multi-instance, sizing, fullscreen, persistence) or to let developers add modules to the Footer config without waiting for real business MFEs.
 
 `mfe-demo` fills that gap as a real Native Federation remote that is intentionally non-business.
 
