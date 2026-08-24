@@ -4,6 +4,23 @@ Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company B
 
 > Source of truth: [`.agent/project-info/brief.md`](.agent/project-info/brief.md). On any conflict, `brief.md` wins.
 
+## Table of Contents
+
+- [Purpose](#purpose)
+- [What It Is Not](#what-it-is-not)
+- [Status](#status)
+- [Tech Stack](#tech-stack)
+- [Federation Identity](#federation-identity)
+- [Development Modes](#development-modes)
+- [Dev Ports & CORS](#dev-ports--cors)
+- [Quick Start](#quick-start)
+- [Federation Configuration](#federation-configuration)
+- [Shell ↔ MFE Contract (summary)](#shell--mfe-contract-summary)
+- [View Modes (`DemoConfig`)](#view-modes-democonfig)
+- [Project Structure](#project-structure)
+- [Documentation & Project Info](#documentation--project-info)
+- [For AI Agents](#for-ai-agents)
+
 ## Purpose
 
 1. **Test harness** for the Shell while it is WIP — workspace rows, sizing, collapse, fullscreen, drag & drop, persistence, and multi-instance.
@@ -167,6 +184,8 @@ See [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md)
 - [`.agent/project-info/instructions.md`](.agent/project-info/instructions.md) — project-info instructions for agents.
 - [`.agent/WORKFLOWS.md`](.agent/WORKFLOWS.md) — project workflows.
 - [`.kilo/commands/critical-workflow.md`](.kilo/commands/critical-workflow.md) — critical workflow reference.
+- [`docs/how-to-write-todo-files.md`](docs/how-to-write-todo-files.md) — guide for writing TODO files.
+- [`docs/how-to-set-up-git.md`](docs/how-to-set-up-git.md) — guide for Git setup.
 
 ## For AI Agents
 
