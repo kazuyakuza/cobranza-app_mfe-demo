@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { CbaBadgeComponent } from '@cobranza-apps/ui';
 import { MFE_EVENTS, SCHEMA_VERSION, type ModuleSize } from '@cobranza-apps/mfe-events';
 
 import { coerceDemoConfig } from './demo-config';
+import { DemoTableComponent } from './views/demo-table/demo-table.component';
 
 @Component({
   selector: 'cba-demo',
   standalone: true,
+  imports: [CbaBadgeComponent, DemoTableComponent],
   templateUrl: './demo.component.html',
   styleUrl: './demo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,30 +28,68 @@ import { coerceDemoConfig } from './demo-config';
  * Selector: `cba-demo`
  */
 export class DemoComponent {
-  /** Always `'demo'` for this remote (set by the Shell). */
   readonly moduleType = input.required<string>();
-  /** Unique per-workspace-instance UUID assigned by the Shell. */
   readonly instanceId = input.required<string>();
-  /** Current width fraction — `'50%'` (short) or `'100%'` (long). */
   readonly size = input.required<ModuleSize>();
-  /** Whether the module card is collapsed. */
   readonly isCollapsed = input.required<boolean>();
-  /** Whether the module card is in fullscreen mode. */
   readonly isFullscreen = input.required<boolean>();
-  /**
-   * Opaque config payload from the Shell (footer definition, persisted
-   * workspace state, or `initialData` from `mfe:request-add-module`).
-   * Coerced into `DemoConfig` via `coerceDemoConfig`.
-   */
   readonly data = input<Record<string, unknown> | undefined>(undefined);
 
-  /** Validated, default-filled config derived from the raw `data` input. */
   readonly config = computed(() => coerceDemoConfig(this.data()));
-  /** Active view mode — shorthand for `config().view`. */
   readonly view = computed(() => this.config().view ?? 'table');
 
-  readonly sizeLabel = computed(() => (this.size() === '100%' ? 'long' : 'short'));
+  /** Short form of `instanceId` shown in the identity panel (first 8 chars + ellipsis). */
+  readonly shortInstanceId = computed(() => truncateInstanceId(this.instanceId()));
+
+  /** Stable 0–359 hue derived from `instanceId` for the visual instance marker. */
+  readonly instanceHue = computed(() => this.hashString(this.instanceId()) % 360);
+
+  /** Inline style object applied to the root `.cba-demo` element to colour the left border. */
+  readonly instanceColorStyle = computed(() => ({
+    '--demo-instance-marker': `hsl(${this.instanceHue()}, 65%, 45%)`,
+  }));
+
+  /** Spanish human-readable size mode shown in the identity panel. */
+  readonly sizeLabelText = computed(() =>
+    this.size() === '100%' ? 'Ancho completo (100 %)' : 'Mitad de ancho (50 %)',
+  );
+
+  /** Spanish label for the active view shown in the identity panel. */
+  readonly viewLabel = computed(() => viewModeToSpanishLabel(this.view()));
 
   readonly schemaVersion = SCHEMA_VERSION;
   readonly readyEventName = MFE_EVENTS.MODULE_READY;
+  readonly sizeLabel = computed(() => (this.size() === '100%' ? 'long' : 'short'));
+
+  /** Stable 32-bit integer hash of an arbitrary string (used for the instance marker hue). */
+  private hashString(value: string): number {
+    let hash = 0;
+    for (let index = 0; index < value.length; index += 1) {
+      const char = value.charCodeAt(index);
+      hash = (hash << 5) - hash + char;
+      hash |= 0;
+    }
+    return Math.abs(hash);
+  }
+}
+
+const SHORT_ID_PREFIX_LENGTH = 8;
+
+function truncateInstanceId(value: string): string {
+  return value.length > SHORT_ID_PREFIX_LENGTH
+    ? `${value.slice(0, SHORT_ID_PREFIX_LENGTH)}…`
+    : value;
+}
+
+function viewModeToSpanishLabel(view: string): string {
+  if (view === 'table') {
+    return 'Tabla';
+  }
+  if (view === 'create-form') {
+    return 'Alta';
+  }
+  if (view === 'profile') {
+    return 'Perfil';
+  }
+  return 'Desconocida';
 }

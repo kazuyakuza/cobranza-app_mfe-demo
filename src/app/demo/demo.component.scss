@@ -1,9 +1,36 @@
 :host {
   display: block;
-  background-color: var(--cba-bg-secondary);
-  padding: 0.75rem;
 }
 
-.cba-demo__summary {
-  margin-bottom: 0.5rem;
+.cba-demo {
+  display: block;
+  background-color: var(--cba-bg-secondary);
+  padding: var(--cba-space-3);
+  border-left: 4px solid var(--demo-instance-marker);
+  border-radius: var(--cba-radius-md);
+}
+
+.cba-demo__identity {
+  margin-bottom: var(--cba-space-3);
+}
+
+.cba-demo__identity-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cba-space-2);
+  margin-bottom: var(--cba-space-2);
+}
+
+.cba-demo__identity-row:last-child {
+  margin-bottom: 0;
+}
+
+.cba-demo__instance-id {
+  cursor: help;
+  text-decoration: underline dotted;
+}
+
+.cba-demo__placeholder {
+  padding: var(--cba-space-2) 0;
 }

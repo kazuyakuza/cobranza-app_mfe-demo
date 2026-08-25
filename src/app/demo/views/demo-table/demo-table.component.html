@@ -1,0 +1,41 @@
+<div class="demo-table" [attr.data-size]="size()">
+  <p class="cba-text-caption demo-table__size-label" aria-live="polite">
+    {{ sizeLabelText() }}
+  </p>
+
+  @if (rows().length === 0) {
+    <cba-empty-state
+      title="Sin filas"
+      description="La configuración solicitó 0 filas de ejemplo."
+    />
+  } @else {
+    <div class="table-responsive">
+      <table class="demo-table__table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.id) {
+            <tr>
+              <td>{{ row.id }}</td>
+              <td>{{ row.concepto }}</td>
+              <td>{{ row.monto }}</td>
+              <td>{{ row.fecha }}</td>
+              <td>
+                <cba-badge [variant]="badgeVariantFor(row.estado)">
+                  {{ row.estado }}
+                </cba-badge>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

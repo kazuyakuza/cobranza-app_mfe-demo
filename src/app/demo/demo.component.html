@@ -1,23 +1,55 @@
-<section class="cba-demo" [attr.data-size]="size()">
-  <header class="cba-demo__summary">
-    <p class="cba-text-caption">Módulo: {{ moduleType() }} · Instancia: {{ instanceId() }}</p>
-    <p class="cba-text-caption">
-      Tamaño: {{ size() }} ({{ sizeLabel() }}) · Colapsado: {{ isCollapsed() }} ·
-      Pantalla completa: {{ isFullscreen() }}
-    </p>
-    <p class="cba-text-caption">Vista actual: {{ view() }}</p>
-    <p class="cba-text-caption">Esquema: {{ schemaVersion }} · Evento ready: {{ readyEventName }}</p>
+<section
+  class="cba-demo"
+  [attr.data-size]="size()"
+  [style]="instanceColorStyle()">
+
+  <header class="cba-demo__identity">
+    <div class="cba-demo__identity-row">
+      <span class="cba-text-caption">
+        <strong>Módulo:</strong> {{ moduleType() }}
+      </span>
+      <span class="cba-text-caption">
+        <strong>Instancia:</strong>
+        <abbr [title]="instanceId()" class="cba-demo__instance-id">
+          {{ shortInstanceId() }}
+        </abbr>
+      </span>
+    </div>
+
+    <div class="cba-demo__identity-row">
+      <span class="cba-text-caption">
+        <strong>Tamaño:</strong> {{ sizeLabelText() }}
+      </span>
+      <cba-badge variant="neutral" appearance="outline">
+        {{ isCollapsed() ? 'Colapsado' : 'Expandido' }}
+      </cba-badge>
+      <cba-badge variant="neutral" appearance="outline">
+        {{ isFullscreen() ? 'Pantalla completa' : 'Ventana normal' }}
+      </cba-badge>
+    </div>
+
+    <div class="cba-demo__identity-row">
+      <span class="cba-text-caption">
+        <strong>Vista:</strong> {{ viewLabel() }}
+      </span>
+    </div>
   </header>
 
   @switch (view()) {
     @case ('table') {
-      <p class="cba-text-body">Vista tabla — filas simuladas: {{ config().tableRows }}.</p>
+      <app-demo-table [rowCount]="config().tableRows ?? 5" [size]="size()" />
     }
     @case ('create-form') {
-      <p class="cba-text-body">Vista alta — pendiente en Phase 0.</p>
+      <div class="cba-demo__placeholder">
+        <p class="cba-text-body">Vista aún no implementada en Phase 0.</p>
+        <p class="cba-text-caption">Vista seleccionada: Alta</p>
+      </div>
     }
     @case ('profile') {
-      <p class="cba-text-body">Vista perfil — pendiente en Phase 0.</p>
+      <div class="cba-demo__placeholder">
+        <p class="cba-text-body">Vista aún no implementada en Phase 0.</p>
+        <p class="cba-text-caption">Vista seleccionada: Perfil</p>
+      </div>
     }
   }
 </section>

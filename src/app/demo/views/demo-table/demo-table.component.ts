@@ -1,0 +1,86 @@
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { CbaBadgeComponent, CbaEmptyStateComponent } from '@cobranza-apps/ui';
+
+/** Single mock row rendered in the demo 'table' view. */
+interface DemoTableRow {
+  readonly id: number;
+  readonly concepto: string;
+  readonly monto: string;
+  readonly fecha: string;
+  readonly estado: 'Pagado' | 'Pendiente' | 'Vencido';
+}
+
+const CONCEPTOS: readonly string[] = [
+  'Cuota mensual',
+  'Pago parcial',
+  'Recargo por mora',
+  'Servicio de gestión',
+  'Reembolso ajustado',
+  'Cargo administrativo',
+];
+
+const ESTADOS: readonly DemoTableRow['estado'][] = ['Pagado', 'Pendiente', 'Vencido'];
+const FIXED_FECHA = '24/08/2026';
+const SIZE_LABEL_LONG = 'Ancho completo (100 %)';
+const SIZE_LABEL_SHORT = 'Mitad de ancho (50 %)';
+
+@Component({
+  selector: 'app-demo-table',
+  standalone: true,
+  imports: [CbaBadgeComponent, CbaEmptyStateComponent],
+  templateUrl: './demo-table.component.html',
+  styleUrl: './demo-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+/**
+ * Mock data table rendered by `DemoComponent` when `view === 'table'`.
+ * Rows are generated deterministically from the `rowCount` input.
+ */
+export class DemoTableComponent {
+  /** Number of mock rows to render. Coerced to a non-negative finite number upstream. */
+  readonly rowCount = input.required<number>();
+  /** Current module width fraction — drives the `data-size` reflow hook and size caption. */
+  readonly size = input.required<'50%' | '100%'>();
+
+  /** Mock rows derived from `rowCount`. Empty when `rowCount === 0`. */
+  readonly rows = computed<DemoTableRow[]>(() => this.buildMockRows(this.rowCount()));
+
+  /** Spanish human-readable size mode shown above the table. */
+  readonly sizeLabelText = computed(() =>
+    this.size() === '100%' ? SIZE_LABEL_LONG : SIZE_LABEL_SHORT,
+  );
+
+  /** Maps a Spanish estado string to a `CbaBadge` variant. */
+  badgeVariantFor(estado: DemoTableRow['estado']): 'success' | 'warning' | 'danger' {
+    return mapEstadoToVariant(estado);
+  }
+
+  private buildMockRows(count: number): DemoTableRow[] {
+    const safeCount = Math.max(0, Math.floor(count));
+    const result: DemoTableRow[] = [];
+    for (let index = 0; index < safeCount; index += 1) {
+      result.push(buildRow(index));
+    }
+    return result;
+  }
+}
+
+function buildRow(index: number): DemoTableRow {
+  return {
+    id: index + 1,
+    concepto: CONCEPTOS[index % CONCEPTOS.length],
+    monto: `$ ${(index + 1) * 1250}`,
+    fecha: FIXED_FECHA,
+    estado: ESTADOS[index % ESTADOS.length],
+  };
+}
+
+function mapEstadoToVariant(estado: DemoTableRow['estado']): 'success' | 'warning' | 'danger' {
+  if (estado === 'Pagado') {
+    return 'success';
+  }
+  if (estado === 'Pendiente') {
+    return 'warning';
+  }
+  return 'danger';
+}
