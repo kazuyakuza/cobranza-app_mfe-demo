@@ -35,3 +35,7 @@
 .demo-table[data-size='50%'] .demo-table__table {
   min-width: 28rem;
 }
+
+.table-responsive {
+  overflow-x: auto;
+}
