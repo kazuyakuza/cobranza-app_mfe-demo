@@ -43,9 +43,6 @@
 						"port": 0
 					}
 				},
-				"extract-i18n": {
-					"builder": "@angular/build:extract-i18n"
-				},
 				"esbuild": {
 					"builder": "@angular/build:application",
 					"options": {

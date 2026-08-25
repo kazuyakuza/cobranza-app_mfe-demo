@@ -15,9 +15,7 @@
     "@angular/compiler": "22.1.2",
     "@angular/core": "22.1.2",
     "@angular/forms": "22.1.2",
-    "@angular/localize": "22.1.2",
     "@angular/platform-browser": "22.1.2",
-    "@angular/platform-browser-dynamic": "22.1.2",
     "@angular/router": "22.1.2",
     "@cobranza-apps/entities": "^0.5.1",
     "@cobranza-apps/mfe-events": "^0.5.0",
@@ -29,7 +27,6 @@
     "@ng-bootstrap/ng-bootstrap": "^21.0.0",
     "bootstrap": "^5.3.8",
     "es-module-shims": "^2.8.4",
-    "reflect-metadata": "^0.2.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -39,7 +36,6 @@
     "@angular/build": "22.1.2",
     "@angular/cli": "22.1.2",
     "@angular/compiler-cli": "22.1.2",
-    "typescript": "~6.0.0",
-    "@softarc/native-federation-orchestrator": "^4.6.0"
+    "typescript": "~6.0.0"
   }
 }
