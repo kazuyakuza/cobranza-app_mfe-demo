@@ -14,17 +14,14 @@ import {
   MFE_EVENTS,
   SCHEMA_VERSION,
   SHELL_EVENTS,
-  type ModuleReadyPayload,
+  type MfeEventMap,
   type ModuleSize,
-  type ModuleStatePayload,
   type ModuleStatus,
-  type ShowNotificationPayload,
-  type ThemeChangedPayload,
-  type UpdateHeaderPayload,
-  type VisibilityChangedPayload,
+  type ShellEventMap,
 } from '@cobranza-apps/mfe-events';
 
 import { coerceDemoConfig, defaultTitleForView, viewModeToSpanishLabel } from './demo-config';
+import { hashString, truncateInstanceId } from './demo-utils';
 import { DemoCreateFormComponent } from './views/demo-create-form/demo-create-form.component';
 import { DemoProfileComponent } from './views/demo-profile/demo-profile.component';
 import { DemoTableComponent } from './views/demo-table/demo-table.component';
@@ -66,7 +63,7 @@ export class DemoComponent implements OnInit, OnDestroy {
 
   readonly shortInstanceId = computed(() => truncateInstanceId(this.instanceId()));
 
-  readonly instanceHue = computed(() => this.hashString(this.instanceId()) % 360);
+  readonly instanceHue = computed(() => hashString(this.instanceId()) % 360);
 
   readonly instanceColorStyle = computed(() => ({
     '--demo-instance-marker': `hsl(${this.instanceHue()}, 65%, 45%)`,
@@ -82,41 +79,35 @@ export class DemoComponent implements OnInit, OnDestroy {
     this.config().title ?? defaultTitleForView(this.view()),
   );
 
-  readonly schemaVersion = SCHEMA_VERSION;
-  readonly readyEventName = MFE_EVENTS.MODULE_READY;
   readonly headerEventName = MFE_EVENTS.UPDATE_HEADER;
 
-  private previousResolvedTitle = '';
-
   constructor() {
+    let previousTitle = '';
     effect(() => {
-      const resolvedTitle = this.resolvedTitle();
-      if (resolvedTitle !== this.previousResolvedTitle) {
-        this.dispatchUpdateHeader(resolvedTitle, 'loaded');
-        this.previousResolvedTitle = resolvedTitle;
+      const title = this.resolvedTitle();
+      if (title !== previousTitle) {
+        this.dispatchUpdateHeader(title, 'loaded');
+        previousTitle = title;
       }
     });
   }
 
-  /** Handles `shell:module-state`; ignores events targeting other instances. */
-  private readonly onModuleState = (event: Event): void => {
-    if (!isShellEvent(event, SHELL_EVENTS.MODULE_STATE)) return;
-    if (event.detail.instanceId !== this.instanceId()) return;
-    console.log('[mfe-demo] received', SHELL_EVENTS.MODULE_STATE, event.detail);
+  private readonly createShellHandler = <K extends keyof ShellEventMap>(
+    eventName: K,
+    filterByInstance = true,
+  ) => (event: Event): void => {
+    if (!isShellEvent(event, eventName)) return;
+    const detail = event.detail;
+    if (filterByInstance) {
+      if (!('instanceId' in detail)) return;
+      if (detail.instanceId !== this.instanceId()) return;
+    }
+    console.log('[mfe-demo] received', eventName, detail);
   };
 
-  /** Handles `shell:visibility-changed`; ignores events targeting other instances. */
-  private readonly onVisibilityChanged = (event: Event): void => {
-    if (!isShellEvent(event, SHELL_EVENTS.VISIBILITY_CHANGED)) return;
-    if (event.detail.instanceId !== this.instanceId()) return;
-    console.log('[mfe-demo] received', SHELL_EVENTS.VISIBILITY_CHANGED, event.detail);
-  };
-
-  /** Handles `shell:theme-changed`; global — no `instanceId` filter. */
-  private readonly onThemeChanged = (event: Event): void => {
-    if (!isShellEvent(event, SHELL_EVENTS.THEME_CHANGED)) return;
-    console.log('[mfe-demo] received', SHELL_EVENTS.THEME_CHANGED, event.detail);
-  };
+  private readonly onModuleState = this.createShellHandler(SHELL_EVENTS.MODULE_STATE);
+  private readonly onVisibilityChanged = this.createShellHandler(SHELL_EVENTS.VISIBILITY_CHANGED);
+  private readonly onThemeChanged = this.createShellHandler(SHELL_EVENTS.THEME_CHANGED, false);
 
   ngOnInit(): void {
     this.dispatchReadyEvent();
@@ -131,26 +122,22 @@ export class DemoComponent implements OnInit, OnDestroy {
 
   /** Dispatches `mfe:module-ready` with schema version, module type, and instance ID. */
   private dispatchReadyEvent(): void {
-    const payload: ModuleReadyPayload = {
+    this.dispatch(MFE_EVENTS.MODULE_READY, {
       schemaVersion: SCHEMA_VERSION,
       moduleType: this.moduleType(),
       instanceId: this.instanceId(),
-    };
-    console.log('[mfe-demo] dispatch', MFE_EVENTS.MODULE_READY, payload);
-    dispatchMfeEvent(MFE_EVENTS.MODULE_READY, payload);
+    });
   }
 
   /** Dispatches `mfe:update-header` with the resolved title and a status. */
   private dispatchUpdateHeader(title: string, status: ModuleStatus): void {
-    const payload: UpdateHeaderPayload = {
+    this.dispatch(MFE_EVENTS.UPDATE_HEADER, {
       schemaVersion: SCHEMA_VERSION,
       moduleType: this.moduleType(),
       instanceId: this.instanceId(),
       title,
       status,
-    };
-    console.log('[mfe-demo] dispatch', MFE_EVENTS.UPDATE_HEADER, payload);
-    dispatchMfeEvent(MFE_EVENTS.UPDATE_HEADER, payload);
+    });
   }
 
   /** Dispatches a global `mfe:show-notification` toast. */
@@ -158,13 +145,16 @@ export class DemoComponent implements OnInit, OnDestroy {
     type: 'success' | 'warning' | 'error' | 'info',
     message: string,
   ): void {
-    const payload: ShowNotificationPayload = {
+    this.dispatch(MFE_EVENTS.SHOW_NOTIFICATION, {
       schemaVersion: SCHEMA_VERSION,
       type,
       message,
-    };
-    console.log('[mfe-demo] dispatch', MFE_EVENTS.SHOW_NOTIFICATION, payload);
-    dispatchMfeEvent(MFE_EVENTS.SHOW_NOTIFICATION, payload);
+    });
+  }
+
+  private dispatch<K extends keyof MfeEventMap>(name: K, payload: MfeEventMap[K]): void {
+    console.log('[mfe-demo] dispatch', name, payload);
+    dispatchMfeEvent(name, payload);
   }
 
   readonly onCreateFormPrimary = (): void => {
@@ -182,22 +172,4 @@ export class DemoComponent implements OnInit, OnDestroy {
     window.addEventListener(SHELL_EVENTS.VISIBILITY_CHANGED, this.onVisibilityChanged);
     window.addEventListener(SHELL_EVENTS.THEME_CHANGED, this.onThemeChanged);
   }
-
-  private hashString(value: string): number {
-    let hash = 0;
-    for (let index = 0; index < value.length; index += 1) {
-      const char = value.charCodeAt(index);
-      hash = (hash << 5) - hash + char;
-      hash |= 0;
-    }
-    return Math.abs(hash);
-  }
-}
-
-const SHORT_ID_PREFIX_LENGTH = 8;
-
-function truncateInstanceId(value: string): string {
-  return value.length > SHORT_ID_PREFIX_LENGTH
-    ? `${value.slice(0, SHORT_ID_PREFIX_LENGTH)}…`
-    : value;
 }

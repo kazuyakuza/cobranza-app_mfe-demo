@@ -14,6 +14,8 @@ interface DemoProfileField {
   readonly value: string;
 }
 
+const DANGER_ESTADOS: Readonly<Set<string>> = new Set(['Vencido', 'Inactivo']);
+
 const DEFAULT_PROFILE: Record<string, unknown> = {
   nombre: 'Juan Pérez',
   dni: '30.111.222',
@@ -64,13 +66,15 @@ export class DemoProfileComponent {
     this.buildFields(this.profile()),
   );
 
-  readonly estadoBadgeVariant = computed<'success' | 'warning' | 'danger' | 'neutral'>(() =>
-    this.resolveEstadoVariant(this.fields()),
+  readonly estadoField = computed(() =>
+    this.fields().find((field) => field.label === 'Estado'),
   );
 
-  readonly estadoValue = computed(() =>
-    this.fields().find((field) => field.label === 'Estado')?.value ?? '—',
+  readonly estadoBadgeVariant = computed<'success' | 'warning' | 'danger' | 'neutral'>(() =>
+    this.resolveEstadoVariant(this.estadoField()?.value ?? ''),
   );
+
+  readonly estadoValue = computed(() => this.estadoField()?.value ?? '—');
 
   private buildFields(profile: Record<string, unknown> | undefined): DemoProfileField[] {
     const source = isPlainObject(profile) ? profile : DEFAULT_PROFILE;
@@ -80,11 +84,10 @@ export class DemoProfileComponent {
     }));
   }
 
-  private resolveEstadoVariant(fields: DemoProfileField[]): 'success' | 'warning' | 'danger' | 'neutral' {
-    const estado = fields.find((field) => field.label === 'Estado')?.value ?? '';
+  private resolveEstadoVariant(estado: string): 'success' | 'warning' | 'danger' | 'neutral' {
     if (estado === 'Activo') return 'success';
     if (estado === 'Pendiente') return 'warning';
-    if (estado === 'Vencido' || estado === 'Inactivo') return 'danger';
+    if (DANGER_ESTADOS.has(estado)) return 'danger';
     return 'neutral';
   }
 }
