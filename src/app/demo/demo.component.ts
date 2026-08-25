@@ -10,28 +10,29 @@ import {
 import { DatePipe } from '@angular/common';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import {
-  CbaAccordionComponent,
-  CbaBadgeComponent,
-  CbaButtonComponent,
-  CbaCardComponent,
+  CbaAccordionComponent, CbaBadgeComponent, CbaButtonComponent, CbaCardComponent,
 } from '@cobranza-apps/ui';
 import {
   isShellEvent,
   MFE_EVENTS,
   SHELL_EVENTS,
   type ModuleSize,
-  type ShellEventMap,
 } from '@cobranza-apps/mfe-events';
 
 import { coerceDemoConfig, defaultTitleForView, viewModeToSpanishLabel } from './demo-config';
 import { DemoDispatcher } from './demo-dispatcher';
-import { DemoEventLog } from './demo-event-log';
-import { MAX_LOG_ENTRIES } from './demo-log-entry';
+import { DemoEventLog, MAX_LOG_ENTRIES } from './demo-event-log';
 import { DemoShellState } from './demo-shell-state';
 import { hashString, truncateInstanceId } from './demo-utils';
 import { DemoCreateFormComponent } from './views/demo-create-form/demo-create-form.component';
 import { DemoProfileComponent } from './views/demo-profile/demo-profile.component';
 import { DemoTableComponent } from './views/demo-table/demo-table.component';
+
+interface ActionButtonConfig {
+  readonly label: string;
+  readonly variant: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success';
+  readonly action: () => void;
+}
 
 @Component({
   selector: 'cba-demo',
@@ -113,10 +114,27 @@ export class DemoComponent implements OnInit, OnDestroy {
   readonly maxLogEntries = MAX_LOG_ENTRIES;
 
   readonly eventLog = new DemoEventLog();
-  readonly shellState = new DemoShellState(this.size, this.isCollapsed, this.isFullscreen);
-  readonly dispatcher = new DemoDispatcher(this.moduleType, this.instanceId, this.eventLog);
+  readonly shellState = new DemoShellState({
+    inputSize: this.size,
+    inputIsCollapsed: this.isCollapsed,
+    inputIsFullscreen: this.isFullscreen,
+  });
+  readonly dispatcher = new DemoDispatcher({
+    moduleType: this.moduleType,
+    instanceId: this.instanceId,
+    eventLog: this.eventLog,
+  });
 
-  readonly sizeLabelText = computed(() => this.shellState.sizeLabelText());
+  readonly actionButtons: readonly ActionButtonConfig[] = [
+    { label: 'Actualizar título', variant: 'primary', action: () => this.dispatcher.cycleHeaderDemo() },
+    { label: 'Notificación éxito', variant: 'success', action: () => this.dispatcher.showNotification('success', 'Notificación de éxito') },
+    { label: 'Notificación advertencia', variant: 'secondary', action: () => this.dispatcher.showNotification('warning', 'Notificación de advertencia') },
+    { label: 'Notificación error', variant: 'danger', action: () => this.dispatcher.showNotification('error', 'Notificación de error') },
+    { label: 'Pantalla completa', variant: 'secondary', action: () => this.dispatcher.requestFullscreen() },
+    { label: 'Quitar módulo', variant: 'danger', action: () => this.dispatcher.requestRemove() },
+    { label: 'Agregar instancia', variant: 'secondary', action: () => this.dispatcher.requestAddModule() },
+    { label: 'Simular error', variant: 'danger', action: () => this.dispatcher.moduleError() },
+  ];
 
   constructor() {
     let previousTitle = '';
@@ -138,24 +156,26 @@ export class DemoComponent implements OnInit, OnDestroy {
     this.dispatcher.showNotification('info', 'Formulario reiniciado');
   };
 
-  private readonly createInstanceFilter = <K extends keyof ShellEventMap>(
-    eventName: K,
-  ) => (event: Event): void => {
-    if (!isShellEvent(event, eventName)) return;
-    const detail = event.detail;
-    if (!('instanceId' in detail)) return;
-    if (detail.instanceId !== this.instanceId()) return;
-    if (detail.moduleType !== this.moduleType()) return;
-    this.eventLog.add('in', eventName, detail);
-    this.handleShellEvent(eventName, detail);
+  private readonly matchesThisInstance = (detail: { instanceId: string; moduleType: string }): boolean =>
+    detail.instanceId === this.instanceId() && detail.moduleType === this.moduleType();
+
+  private readonly onModuleState = (event: Event): void => {
+    if (!isShellEvent(event, SHELL_EVENTS.MODULE_STATE)) return;
+    if (!this.matchesThisInstance(event.detail)) return;
+    this.eventLog.add({ direction: 'in', eventType: SHELL_EVENTS.MODULE_STATE, payload: event.detail });
+    this.shellState.applyModuleState(event.detail);
   };
 
-  private readonly onModuleState = this.createInstanceFilter(SHELL_EVENTS.MODULE_STATE);
-  private readonly onVisibilityChanged = this.createInstanceFilter(SHELL_EVENTS.VISIBILITY_CHANGED);
+  private readonly onVisibilityChanged = (event: Event): void => {
+    if (!isShellEvent(event, SHELL_EVENTS.VISIBILITY_CHANGED)) return;
+    if (!this.matchesThisInstance(event.detail)) return;
+    this.eventLog.add({ direction: 'in', eventType: SHELL_EVENTS.VISIBILITY_CHANGED, payload: event.detail });
+    this.shellState.applyVisibility(event.detail);
+  };
 
   private readonly onThemeChanged = (event: Event): void => {
     if (!isShellEvent(event, SHELL_EVENTS.THEME_CHANGED)) return;
-    this.eventLog.add('in', SHELL_EVENTS.THEME_CHANGED, event.detail);
+    this.eventLog.add({ direction: 'in', eventType: SHELL_EVENTS.THEME_CHANGED, payload: event.detail });
   };
 
   ngOnInit(): void {
@@ -167,19 +187,6 @@ export class DemoComponent implements OnInit, OnDestroy {
     window.removeEventListener(SHELL_EVENTS.MODULE_STATE, this.onModuleState);
     window.removeEventListener(SHELL_EVENTS.VISIBILITY_CHANGED, this.onVisibilityChanged);
     window.removeEventListener(SHELL_EVENTS.THEME_CHANGED, this.onThemeChanged);
-  }
-
-  private handleShellEvent<K extends keyof ShellEventMap>(
-    eventName: K,
-    detail: ShellEventMap[K],
-  ): void {
-    if (eventName === SHELL_EVENTS.MODULE_STATE) {
-      this.shellState.applyModuleState(detail as ShellEventMap[typeof SHELL_EVENTS.MODULE_STATE]);
-      return;
-    }
-    if (eventName === SHELL_EVENTS.VISIBILITY_CHANGED) {
-      this.shellState.applyVisibility(detail as ShellEventMap[typeof SHELL_EVENTS.VISIBILITY_CHANGED]);
-    }
   }
 
   private attachShellListeners(): void {

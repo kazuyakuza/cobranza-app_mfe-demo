@@ -74,8 +74,8 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
   private readonly mfeEventNames = Object.values(MFE_EVENTS);
 
   private readonly onMfeEvent = (event: Event): void => {
-    const customEvent = event as CustomEvent<unknown>;
-    console.log('[demo-preview] captured', customEvent.type, customEvent.detail);
+    if (!(event instanceof CustomEvent)) return;
+    console.log('[demo-preview] captured', event.type, event.detail);
   };
 
   readonly emitModuleState = (): void => {

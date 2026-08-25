@@ -18,7 +18,7 @@
 
     <div class="cba-demo__identity-row">
       <span class="cba-text-caption">
-        <strong>Tamaño:</strong> {{ sizeLabelText() }}
+        <strong>Tamaño:</strong> {{ shellState.sizeLabelText() }}
       </span>
       <cba-badge variant="neutral" appearance="outline">
         {{ shellState.displayIsCollapsed() ? 'Colapsado' : 'Expandido' }}
@@ -61,14 +61,11 @@
   </header>
 
   <section class="cba-demo__actions" aria-label="Acciones de demostración">
-    <cba-button size="sm" variant="primary" (cbaClick)="dispatcher.cycleHeaderDemo()">Actualizar título</cba-button>
-    <cba-button size="sm" variant="success" (cbaClick)="dispatcher.showNotification('success', 'Notificación de éxito')">Notificación éxito</cba-button>
-    <cba-button size="sm" variant="secondary" (cbaClick)="dispatcher.showNotification('warning', 'Notificación de advertencia')">Notificación advertencia</cba-button>
-    <cba-button size="sm" variant="danger" (cbaClick)="dispatcher.showNotification('error', 'Notificación de error')">Notificación error</cba-button>
-    <cba-button size="sm" variant="secondary" (cbaClick)="dispatcher.requestFullscreen()">Pantalla completa</cba-button>
-    <cba-button size="sm" variant="danger" (cbaClick)="dispatcher.requestRemove()">Quitar módulo</cba-button>
-    <cba-button size="sm" variant="secondary" (cbaClick)="dispatcher.requestAddModule()">Agregar instancia</cba-button>
-    <cba-button size="sm" variant="danger" (cbaClick)="dispatcher.moduleError()">Simular error</cba-button>
+    @for (button of actionButtons; track button.label) {
+      <cba-button size="sm" [variant]="button.variant" (cbaClick)="button.action()">
+        {{ button.label }}
+      </cba-button>
+    }
   </section>
 
   @switch (view()) {
