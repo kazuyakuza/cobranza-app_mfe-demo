@@ -8,14 +8,24 @@ import { CbaBadgeComponent, CbaCardComponent } from '@cobranza-apps/ui';
 
 import { isPlainObject } from '../../demo-config';
 
-/** Single label/value pair rendered in the read-only profile list. */
+/** Single label/value pair rendered in the read-only profile `<dl>` list. */
 interface DemoProfileField {
   readonly label: string;
   readonly value: string;
 }
 
+/**
+ * Estado values that render with a red/danger badge variant.
+ * All other known values map to `'success'` (Activo), `'warning'` (Pendiente),
+ * or `'neutral'` (unknown). See {@link DemoProfileComponent.resolveEstadoVariant}.
+ */
 const DANGER_ESTADOS: Readonly<Set<string>> = new Set(['Vencido', 'Inactivo']);
 
+/**
+ * Fallback profile data used when `config.profile` is absent or not a plain
+ * object. Provides sensible Spanish mock defaults so the profile view always
+ * renders meaningful content in the standalone preview and demo scenarios.
+ */
 const DEFAULT_PROFILE: Record<string, unknown> = {
   nombre: 'Juan Pérez',
   dni: '30.111.222',
@@ -24,6 +34,16 @@ const DEFAULT_PROFILE: Record<string, unknown> = {
   estado: 'Activo',
 };
 
+/**
+ * Maps profile data keys to Spanish display labels.
+ *
+ * Supports two naming conventions:
+ * - Spanish brief-example keys: `nombre`, `dni`, `email`, `telefono`, `saldo`, `estado`.
+ * - Entity-like keys from `@cobranza-apps/entities` `Client`: `fullName`, `taxId`,
+ *   `phone`, `active`, `notes`.
+ *
+ * Unknown keys fall back to capitalized key name via `capitalize()`.
+ */
 const PROFILE_LABELS: Readonly<Record<string, string>> = {
   nombre: 'Nombre',
   dni: 'DNI',

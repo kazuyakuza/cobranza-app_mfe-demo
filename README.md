@@ -36,7 +36,7 @@ Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company B
 
 ## Status
 
-> **Phase 0 complete.** The repository is a buildable Angular 22 Native Federation remote. `ng build` and `ng serve` work; the standalone preview host runs at `http://localhost:4201`. The default `'table'` view, identity panel, per-instance visual marker, and core `mfe:*` events (`module-ready`, `update-header`) are implemented. `'create-form'` and `'profile'` view bodies are placeholders ("Vista aún no implementada en Phase 0"); the full action-button set, local event log UI, and real Shell integration testing are deferred to a later phase.
+> **Phase 1 in progress.** The repository is a buildable Angular 22 Native Federation remote. `ng build` and `ng serve` work; the standalone preview host runs at `http://localhost:4201`. All three body views are implemented and switchable via `DemoConfig.view`: `'table'` (mock data table), `'create-form'` (simulated form with no real API), and `'profile'` (read-only profile card with mock defaults). The identity panel, per-instance visual marker, view-driven title behaviour, and core `mfe:*` events (`module-ready`, `update-header`, `show-notification`) are implemented. The full action-button set, local event log UI, data payload viewer, Shell event listeners, and standalone preview extensions are in progress.
 
 ## Tech Stack
 
@@ -147,6 +147,14 @@ interface DemoConfig {
 
 The component coerces `data` into a validated `DemoConfig` via `coerceDemoConfig` (see `src/app/demo/demo-config.ts`): unknown or invalid `view` values fall back to `'table'`, non-string `title` is dropped, non-plain-object `profile` is dropped, and non-finite / negative `tableRows` falls back to the default (`5`). The Shell only ever sees `Record<string, unknown>` — `DemoConfig` is an internal convention of this repo and is **not** part of `@cobranza-apps/mfe-events`.
 
+**View details:**
+
+- **`'table'`** — `DemoTableComponent` renders a mock data table with `config.tableRows` rows. Includes a responsive wrapper (`table-responsive`) for narrow widths.
+- **`'create-form'`** — `DemoCreateFormComponent` renders a simulated 2-column form (nombre, documento, email, teléfono, observaciones). No real submit or API call; the primary button dispatches `mfe:show-notification` (success) and `mfe:update-header` (status: `success`).
+- **`'profile'`** — `DemoProfileComponent` renders a read-only `<dl>` key-value card from `config.profile`. Falls back to Spanish mock defaults (nombre, DNI, email, saldo, estado) when `profile` is absent. The `estado` field is shown as a colour-coded badge.
+
+**Title behaviour:** When `config.title` is present, it is used for `mfe:update-header`. When absent, the title defaults to `"Demo – <ViewLabel>"` (e.g. `"Demo – Tabla"`, `"Demo – Alta"`, `"Demo – Perfil"`) and auto-updates when the view changes.
+
 Example Footer entries (Shell side):
 
 ```ts
@@ -168,9 +176,12 @@ src/
 │   │   ├── demo.component.ts        # main exposed standalone component (cba-demo)
 │   │   ├── demo.component.html
 │   │   ├── demo.component.scss
-│   │   ├── demo-config.ts           # DemoViewMode + DemoConfig + coerceDemoConfig
+│   │   ├── demo-config.ts           # DemoViewMode + DemoConfig + coerceDemoConfig + view helpers
+│   │   ├── demo-utils.ts            # pure utility functions (hashString, truncateInstanceId)
 │   │   └── views/
-│   │       └── demo-table/          # mock table sub-component (view === 'table')
+│   │       ├── demo-table/          # mock table sub-component (view === 'table')
+│   │       ├── demo-create-form/    # simulated create form (view === 'create-form')
+│   │       └── demo-profile/        # read-only profile card (view === 'profile')
 │   ├── demo-preview/                # standalone preview host (ng serve)
 │   ├── app.component.ts
 │   ├── app.config.ts

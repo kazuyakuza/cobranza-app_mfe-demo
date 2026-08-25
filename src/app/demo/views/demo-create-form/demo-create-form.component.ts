@@ -8,7 +8,14 @@ import {
 import { FormsModule } from '@angular/forms';
 import { CbaButtonComponent, CbaInputComponent } from '@cobranza-apps/ui';
 
-/** Field model for the simulated create form. Spanish-labelled test fields. */
+/**
+ * Field model for the simulated create form.
+ *
+ * Spanish-labelled test fields that mirror `@cobranza-apps/entities` `Client`
+ * (fullName → nombre, taxId → documento, email, phone → teléfono,
+ * notes → observaciones). Kept as local Spanish strings for clarity in the
+ * demo UI; no real validation or API submission occurs.
+ */
 interface DemoCreateFormModel {
   readonly nombre: string;
   readonly documento: string;
@@ -17,6 +24,7 @@ interface DemoCreateFormModel {
   readonly observaciones: string;
 }
 
+/** Initial empty state for all form fields — used on init and on "Reiniciar". */
 const EMPTY_FORM: DemoCreateFormModel = {
   nombre: '',
   documento: '',

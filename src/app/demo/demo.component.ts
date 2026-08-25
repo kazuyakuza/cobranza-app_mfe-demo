@@ -39,14 +39,28 @@ import { DemoTableComponent } from './views/demo-table/demo-table.component';
  *
  * The Shell hosts this component via Native Federation and injects the
  * standard MFE inputs (see `brief.md §3.2`). The component:
- * - Renders one of three internal views (`table` | `create-form` | `profile`)
- *   driven by the opaque `data` input (coerced into `DemoConfig`).
- * - Owns only the body area — module chrome (header, drag handle, collapse,
- *   fullscreen, remove) belongs to the Shell / `@cobranza-apps/ui`.
- * - Dispatches `mfe:module-ready` and `mfe:update-header` on init.
- * - Listens for `shell:module-state`, `shell:visibility-changed`, and
- *   `shell:theme-changed`, filtering by `instanceId` (except theme, which is
- *   global).
+ *
+ * **View switching** — Renders one of three internal views driven by
+ * `config.view` (default `'table'`):
+ * - `'table'` → {@link DemoTableComponent} (mock data table).
+ * - `'create-form'` → {@link DemoCreateFormComponent} (simulated form, no real API).
+ * - `'profile'` → {@link DemoProfileComponent} (read-only profile card).
+ *
+ * **Title behaviour** — `resolvedTitle` returns `config.title` when present,
+ * otherwise falls back to {@link defaultTitleForView} (e.g. `"Demo – Tabla"`).
+ * An `effect()` watches `resolvedTitle` and auto-dispatches `mfe:update-header`
+ * whenever the title changes (including when the view switches via `data`).
+ *
+ * **Shell events** — Dispatches `mfe:module-ready` and `mfe:update-header` on
+ * init. Listens for `shell:module-state`, `shell:visibility-changed`, and
+ * `shell:theme-changed`, filtering by `instanceId` (except theme, which is global).
+ *
+ * **Create-form handlers** — `onCreateFormPrimary` dispatches a success
+ * notification + header status update; `onCreateFormSecondary` dispatches
+ * an info notification. Both are wired to `DemoCreateFormComponent` outputs.
+ *
+ * Owns only the body area — module chrome (header, drag handle, collapse,
+ * fullscreen, remove) belongs to the Shell / `@cobranza-apps/ui`.
  *
  * Selector: `cba-demo`
  */
