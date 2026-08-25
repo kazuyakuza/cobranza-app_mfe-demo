@@ -27,3 +27,33 @@
   border-radius: var(--cba-radius-sm);
   background-color: var(--cba-bg-primary);
 }
+
+.demo-preview__field--wide {
+  flex: 1 1 100%;
+}
+
+.demo-preview__field textarea {
+  font-family: monospace;
+  font-size: 0.8125rem;
+}
+
+.demo-preview__toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cba-space-3);
+  align-items: center;
+}
+
+.demo-preview__checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--cba-space-1);
+}
+
+.demo-preview__simulators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cba-space-2);
+  align-items: center;
+  margin-top: var(--cba-space-2);
+}

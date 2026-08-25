@@ -21,12 +21,30 @@
         <strong>Tamaño:</strong> {{ sizeLabelText() }}
       </span>
       <cba-badge variant="neutral" appearance="outline">
-        {{ isCollapsed() ? 'Colapsado' : 'Expandido' }}
+        {{ shellState.displayIsCollapsed() ? 'Colapsado' : 'Expandido' }}
       </cba-badge>
       <cba-badge variant="neutral" appearance="outline">
-        {{ isFullscreen() ? 'Pantalla completa' : 'Ventana normal' }}
+        {{ shellState.displayIsFullscreen() ? 'Pantalla completa' : 'Ventana normal' }}
       </cba-badge>
     </div>
+
+    @if (shellState.dimensionsText()) {
+      <div class="cba-demo__identity-row">
+        <span class="cba-text-caption">
+          <strong>Dimensiones:</strong> {{ shellState.dimensionsText() }}
+        </span>
+      </div>
+    }
+
+    @if (shellState.visibilityVisible() !== undefined) {
+      <div class="cba-demo__identity-row">
+        <span class="cba-text-caption">
+          <strong>Visibilidad:</strong>
+          {{ shellState.visibilityVisible() ? 'Visible' : 'Oculto' }}
+          ({{ shellState.visibilityReason() }})
+        </span>
+      </div>
+    }
 
     <div class="cba-demo__identity-row">
       <span class="cba-text-caption">
@@ -41,6 +59,17 @@
       </span>
     </div>
   </header>
+
+  <section class="cba-demo__actions" aria-label="Acciones de demostración">
+    <cba-button size="sm" variant="primary" (cbaClick)="dispatcher.cycleHeaderDemo()">Actualizar título</cba-button>
+    <cba-button size="sm" variant="success" (cbaClick)="dispatcher.showNotification('success', 'Notificación de éxito')">Notificación éxito</cba-button>
+    <cba-button size="sm" variant="secondary" (cbaClick)="dispatcher.showNotification('warning', 'Notificación de advertencia')">Notificación advertencia</cba-button>
+    <cba-button size="sm" variant="danger" (cbaClick)="dispatcher.showNotification('error', 'Notificación de error')">Notificación error</cba-button>
+    <cba-button size="sm" variant="secondary" (cbaClick)="dispatcher.requestFullscreen()">Pantalla completa</cba-button>
+    <cba-button size="sm" variant="danger" (cbaClick)="dispatcher.requestRemove()">Quitar módulo</cba-button>
+    <cba-button size="sm" variant="secondary" (cbaClick)="dispatcher.requestAddModule()">Agregar instancia</cba-button>
+    <cba-button size="sm" variant="danger" (cbaClick)="dispatcher.moduleError()">Simular error</cba-button>
+  </section>
 
   @switch (view()) {
     @case ('table') {
@@ -58,4 +87,45 @@
         [size]="size()" />
     }
   }
+
+  <section class="cba-demo__log" aria-label="Registro de eventos">
+    <cba-card>
+      <div cbaCardHeader class="cba-demo__log-header">
+        <span class="cba-text-caption">Registro de eventos (últimos {{ maxLogEntries }})</span>
+        <cba-button variant="ghost" size="sm" (cbaClick)="eventLog.clear()">Limpiar log</cba-button>
+      </div>
+
+      <ul class="cba-demo__log-list">
+        @for (entry of eventLog.entries(); track entry.timestamp.getTime() + entry.eventType) {
+          <li class="cba-demo__log-item">
+            <span class="cba-demo__log-direction" [attr.data-direction]="entry.direction">
+              {{ entry.direction === 'out' ? '→ OUT' : '← IN' }}
+            </span>
+            <span class="cba-demo__log-time">{{ entry.timestamp | date: 'HH:mm:ss.SSS' }}</span>
+            <span class="cba-demo__log-type">{{ entry.eventType }}</span>
+            <code class="cba-demo__log-summary">{{ entry.payloadSummary }}</code>
+          </li>
+        } @empty {
+          <li class="cba-demo__log-empty">Sin eventos registrados.</li>
+        }
+      </ul>
+    </cba-card>
+  </section>
+
+  <section class="cba-demo__payload" aria-label="Payload de datos">
+    <cba-accordion [closeOthers]="false">
+      <div ngbAccordionItem>
+        <div ngbAccordionHeader>
+          <button ngbAccordionButton>Payload (data)</button>
+        </div>
+        <div ngbAccordionCollapse>
+          <div ngbAccordionBody>
+            <ng-template>
+              <pre class="cba-demo__payload-pre"><code>{{ dataJson() }}</code></pre>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </cba-accordion>
+  </section>
 </section>

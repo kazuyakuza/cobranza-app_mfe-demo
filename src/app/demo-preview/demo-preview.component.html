@@ -30,13 +30,40 @@
         name="title"
         placeholder="Título para mfe:update-header" />
     </label>
+
+    <label class="demo-preview__field">
+      <span class="cba-text-small">Filas tabla</span>
+      <input type="number" min="0" max="50" [(ngModel)]="tableRows" name="tableRows" />
+    </label>
+
+    <label class="demo-preview__field demo-preview__field--wide">
+      <span class="cba-text-small">Profile JSON</span>
+      <textarea [(ngModel)]="profileJson" name="profileJson" rows="3"></textarea>
+    </label>
+
+    <div class="demo-preview__toggles">
+      <label class="demo-preview__checkbox">
+        <input type="checkbox" [(ngModel)]="isCollapsed" name="isCollapsed" />
+        <span>Colapsado</span>
+      </label>
+      <label class="demo-preview__checkbox">
+        <input type="checkbox" [(ngModel)]="isFullscreen" name="isFullscreen" />
+        <span>Pantalla completa</span>
+      </label>
+    </div>
+
+    <div class="demo-preview__simulators">
+      <cba-button size="sm" (cbaClick)="emitModuleState()">Enviar shell:module-state</cba-button>
+      <cba-button size="sm" variant="secondary" (cbaClick)="emitVisibilityChanged(true)">Visible</cba-button>
+      <cba-button size="sm" variant="secondary" (cbaClick)="emitVisibilityChanged(false)">Oculto</cba-button>
+    </div>
   </fieldset>
 
   <cba-demo
     [moduleType]="'demo'"
     [instanceId]="instanceId()"
     [size]="size()"
-    [isCollapsed]="false"
-    [isFullscreen]="false"
+    [isCollapsed]="isCollapsed()"
+    [isFullscreen]="isFullscreen()"
     [data]="data()" />
 </div>

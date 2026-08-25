@@ -7,20 +7,27 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { CbaBadgeComponent } from '@cobranza-apps/ui';
+import { DatePipe } from '@angular/common';
+import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import {
-  dispatchMfeEvent,
+  CbaAccordionComponent,
+  CbaBadgeComponent,
+  CbaButtonComponent,
+  CbaCardComponent,
+} from '@cobranza-apps/ui';
+import {
   isShellEvent,
   MFE_EVENTS,
-  SCHEMA_VERSION,
   SHELL_EVENTS,
-  type MfeEventMap,
   type ModuleSize,
-  type ModuleStatus,
   type ShellEventMap,
 } from '@cobranza-apps/mfe-events';
 
 import { coerceDemoConfig, defaultTitleForView, viewModeToSpanishLabel } from './demo-config';
+import { DemoDispatcher } from './demo-dispatcher';
+import { DemoEventLog } from './demo-event-log';
+import { MAX_LOG_ENTRIES } from './demo-log-entry';
+import { DemoShellState } from './demo-shell-state';
 import { hashString, truncateInstanceId } from './demo-utils';
 import { DemoCreateFormComponent } from './views/demo-create-form/demo-create-form.component';
 import { DemoProfileComponent } from './views/demo-profile/demo-profile.component';
@@ -29,7 +36,17 @@ import { DemoTableComponent } from './views/demo-table/demo-table.component';
 @Component({
   selector: 'cba-demo',
   standalone: true,
-  imports: [CbaBadgeComponent, DemoTableComponent, DemoCreateFormComponent, DemoProfileComponent],
+  imports: [
+    CbaAccordionComponent,
+    CbaBadgeComponent,
+    CbaButtonComponent,
+    CbaCardComponent,
+    DatePipe,
+    DemoCreateFormComponent,
+    DemoProfileComponent,
+    DemoTableComponent,
+    NgbAccordionModule,
+  ],
   templateUrl: './demo.component.html',
   styleUrl: './demo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,7 +70,12 @@ import { DemoTableComponent } from './views/demo-table/demo-table.component';
  *
  * **Shell events** — Dispatches `mfe:module-ready` and `mfe:update-header` on
  * init. Listens for `shell:module-state`, `shell:visibility-changed`, and
- * `shell:theme-changed`, filtering by `instanceId` (except theme, which is global).
+ * `shell:theme-changed`. The instance-scoped listeners are filtered by both
+ * `instanceId` and `moduleType`; theme is global. Every incoming/outgoing event
+ * is recorded in the instance-owned `DemoEventLog`.
+ *
+ * **Action bar** — Renders the full action button set via `DemoDispatcher`,
+ * which records each outgoing `mfe:*` event in the event log.
  *
  * **Create-form handlers** — `onCreateFormPrimary` dispatches a success
  * notification + header status update; `onCreateFormSecondary` dispatches
@@ -74,57 +96,70 @@ export class DemoComponent implements OnInit, OnDestroy {
 
   readonly config = computed(() => coerceDemoConfig(this.data()));
   readonly view = computed(() => this.config().view ?? 'table');
-
-  readonly shortInstanceId = computed(() => truncateInstanceId(this.instanceId()));
-
-  readonly instanceHue = computed(() => hashString(this.instanceId()) % 360);
-
-  readonly instanceColorStyle = computed(() => ({
-    '--demo-instance-marker': `hsl(${this.instanceHue()}, 65%, 45%)`,
-  }));
-
-  readonly sizeLabelText = computed(() =>
-    this.size() === '100%' ? 'Ancho completo (100 %)' : 'Mitad de ancho (50 %)',
-  );
-
   readonly viewLabel = computed(() => viewModeToSpanishLabel(this.view()));
-
   readonly resolvedTitle = computed(() =>
     this.config().title ?? defaultTitleForView(this.view()),
   );
 
+  readonly shortInstanceId = computed(() => truncateInstanceId(this.instanceId()));
+  readonly instanceHue = computed(() => hashString(this.instanceId()) % 360);
+  readonly instanceColorStyle = computed(() => ({
+    '--demo-instance-marker': `hsl(${this.instanceHue()}, 65%, 45%)`,
+  }));
+
+  readonly dataJson = computed(() => JSON.stringify(this.data() ?? null, null, 2));
+
   readonly headerEventName = MFE_EVENTS.UPDATE_HEADER;
+  readonly maxLogEntries = MAX_LOG_ENTRIES;
+
+  readonly eventLog = new DemoEventLog();
+  readonly shellState = new DemoShellState(this.size, this.isCollapsed, this.isFullscreen);
+  readonly dispatcher = new DemoDispatcher(this.moduleType, this.instanceId, this.eventLog);
+
+  readonly sizeLabelText = computed(() => this.shellState.sizeLabelText());
 
   constructor() {
     let previousTitle = '';
     effect(() => {
       const title = this.resolvedTitle();
       if (title !== previousTitle) {
-        this.dispatchUpdateHeader(title, 'loaded');
+        this.dispatcher.updateHeader(title, 'loaded');
         previousTitle = title;
       }
     });
   }
 
-  private readonly createShellHandler = <K extends keyof ShellEventMap>(
+  readonly onCreateFormPrimary = (): void => {
+    this.dispatcher.showNotification('success', 'Formulario de prueba enviado (sin API real)');
+    this.dispatcher.updateHeader(this.resolvedTitle(), 'success');
+  };
+
+  readonly onCreateFormSecondary = (): void => {
+    this.dispatcher.showNotification('info', 'Formulario reiniciado');
+  };
+
+  private readonly createInstanceFilter = <K extends keyof ShellEventMap>(
     eventName: K,
-    filterByInstance = true,
   ) => (event: Event): void => {
     if (!isShellEvent(event, eventName)) return;
     const detail = event.detail;
-    if (filterByInstance) {
-      if (!('instanceId' in detail)) return;
-      if (detail.instanceId !== this.instanceId()) return;
-    }
-    console.log('[mfe-demo] received', eventName, detail);
+    if (!('instanceId' in detail)) return;
+    if (detail.instanceId !== this.instanceId()) return;
+    if (detail.moduleType !== this.moduleType()) return;
+    this.eventLog.add('in', eventName, detail);
+    this.handleShellEvent(eventName, detail);
   };
 
-  private readonly onModuleState = this.createShellHandler(SHELL_EVENTS.MODULE_STATE);
-  private readonly onVisibilityChanged = this.createShellHandler(SHELL_EVENTS.VISIBILITY_CHANGED);
-  private readonly onThemeChanged = this.createShellHandler(SHELL_EVENTS.THEME_CHANGED, false);
+  private readonly onModuleState = this.createInstanceFilter(SHELL_EVENTS.MODULE_STATE);
+  private readonly onVisibilityChanged = this.createInstanceFilter(SHELL_EVENTS.VISIBILITY_CHANGED);
+
+  private readonly onThemeChanged = (event: Event): void => {
+    if (!isShellEvent(event, SHELL_EVENTS.THEME_CHANGED)) return;
+    this.eventLog.add('in', SHELL_EVENTS.THEME_CHANGED, event.detail);
+  };
 
   ngOnInit(): void {
-    this.dispatchReadyEvent();
+    this.dispatcher.ready();
     this.attachShellListeners();
   }
 
@@ -134,53 +169,19 @@ export class DemoComponent implements OnInit, OnDestroy {
     window.removeEventListener(SHELL_EVENTS.THEME_CHANGED, this.onThemeChanged);
   }
 
-  /** Dispatches `mfe:module-ready` with schema version, module type, and instance ID. */
-  private dispatchReadyEvent(): void {
-    this.dispatch(MFE_EVENTS.MODULE_READY, {
-      schemaVersion: SCHEMA_VERSION,
-      moduleType: this.moduleType(),
-      instanceId: this.instanceId(),
-    });
-  }
-
-  /** Dispatches `mfe:update-header` with the resolved title and a status. */
-  private dispatchUpdateHeader(title: string, status: ModuleStatus): void {
-    this.dispatch(MFE_EVENTS.UPDATE_HEADER, {
-      schemaVersion: SCHEMA_VERSION,
-      moduleType: this.moduleType(),
-      instanceId: this.instanceId(),
-      title,
-      status,
-    });
-  }
-
-  /** Dispatches a global `mfe:show-notification` toast. */
-  private dispatchShowNotification(
-    type: 'success' | 'warning' | 'error' | 'info',
-    message: string,
+  private handleShellEvent<K extends keyof ShellEventMap>(
+    eventName: K,
+    detail: ShellEventMap[K],
   ): void {
-    this.dispatch(MFE_EVENTS.SHOW_NOTIFICATION, {
-      schemaVersion: SCHEMA_VERSION,
-      type,
-      message,
-    });
+    if (eventName === SHELL_EVENTS.MODULE_STATE) {
+      this.shellState.applyModuleState(detail as ShellEventMap[typeof SHELL_EVENTS.MODULE_STATE]);
+      return;
+    }
+    if (eventName === SHELL_EVENTS.VISIBILITY_CHANGED) {
+      this.shellState.applyVisibility(detail as ShellEventMap[typeof SHELL_EVENTS.VISIBILITY_CHANGED]);
+    }
   }
 
-  private dispatch<K extends keyof MfeEventMap>(name: K, payload: MfeEventMap[K]): void {
-    console.log('[mfe-demo] dispatch', name, payload);
-    dispatchMfeEvent(name, payload);
-  }
-
-  readonly onCreateFormPrimary = (): void => {
-    this.dispatchShowNotification('success', 'Formulario de prueba enviado (sin API real)');
-    this.dispatchUpdateHeader(this.resolvedTitle(), 'success');
-  };
-
-  readonly onCreateFormSecondary = (): void => {
-    this.dispatchShowNotification('info', 'Formulario reiniciado');
-  };
-
-  /** Registers `window` listeners for the three shell events; cleaned up in `ngOnDestroy`. */
   private attachShellListeners(): void {
     window.addEventListener(SHELL_EVENTS.MODULE_STATE, this.onModuleState);
     window.addEventListener(SHELL_EVENTS.VISIBILITY_CHANGED, this.onVisibilityChanged);
