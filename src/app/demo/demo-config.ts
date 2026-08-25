@@ -56,10 +56,24 @@ function isValidViewMode(value: unknown): value is DemoViewMode {
   return value === 'table' || value === 'create-form' || value === 'profile';
 }
 
-function isPlainObject(value: unknown): value is Record<string, unknown> {
+export function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function isValidTableRowCount(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0;
+}
+
+export const VIEW_LABELS: Readonly<Record<DemoViewMode, string>> = {
+  table: 'Tabla',
+  'create-form': 'Alta',
+  profile: 'Perfil',
+};
+
+export function viewModeToSpanishLabel(view: DemoViewMode): string {
+  return VIEW_LABELS[view] ?? 'Desconocida';
+}
+
+export function defaultTitleForView(view: DemoViewMode): string {
+  return `Demo – ${viewModeToSpanishLabel(view)}`;
 }
