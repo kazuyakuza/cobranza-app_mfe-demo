@@ -4,31 +4,21 @@
 
 ## Current State
 
-- **Date:** 2026-08-24
-- **Branch:** `feat/mfe-demo-phase0`
-- **Repository stage:** Phase 0 implementation complete; README and agent notes updated.
-  - Angular 22.1.2 standalone app scaffolded.
-  - Native Federation configured (`federation.config.js`, `angular.json`).
-  - `DemoComponent` fully implemented with signal Inputs, `DemoConfig` coercion, identity panel, visual instance marker, default `'table'` view, and core `mfe:*` event dispatch (`module-ready`, `update-header`).
-  - `DemoPreviewComponent` fully implemented as the standalone preview host with `size`, `view`, and `title` controls and `mfe:*` event console logging.
-  - `@cobranza-apps/mfe-events` installed and `reflect-metadata` configured in `angular.json`.
+- **Date:** 2026-08-25
+- **Branch:** `feat/phase2-min-height-polish`
+- **Repository stage:** Phase 2 implementation complete (Tasks A done); documentation in progress (Task B).
+  - Min-height contract wired via `@cobranza-apps/mfe-events@^0.6.0` (`mfe:update-min-height`).
+  - `shell:module-state` captures `dragState` / `previewMode`.
+  - Multi-instance isolation, collapse/size/fullscreen polish, UX copy polish verified.
+  - `docs/mfe-demo-shell-usage.md` created; README, views-and-config, actions-and-events, shell-integration-guide, phase0-agent-notes, brief updated.
 
 ## Current Work Focus
 
-Executing `.agent/todos/20260803/20260803-todo-1.md` via the Critical Workflow — Task E: README & Agent Notes.
-
-1. Task 11 — Update `README.md` to reflect completed Phase 0 work and create `docs/phase0-agent-notes.md`.
+Executing `.agent/todos/20260825/20260825-todo-0.md` via the Critical Workflow — Task B (4.1b Planning): documentation plan for Tasks 10–11.
 
 ## Recent Changes
 
-- Created front-end technical spec for Task D at `.kilo/plans/20260824-mfe-demo-phase0-taskD-frontend-spec.md`.
-- Updated `README.md` (Status, Dev Ports, Quick Start, Federation Configuration, Federation Identity, Project Structure, View Modes) to reflect completed Phase 0.
-- Created `docs/phase0-agent-notes.md` with federation identity, folder layout, and Phase 0 boundaries for AI agents.
-
-## Immediate Next Steps
-
-1. Mark TODO Task 11 as `[DONE]` (Critical Workflow Step 4.6).
-2. Complete Critical Workflow Step 5: rename the TODO file with `-DONE` suffix, verify all changes are committed on `feat/mfe-demo-phase0`, and merge to `main`.
+- Created `.kilo/plans/20260825-phase2-taskB.md` (this documentation plan).
 
 ## Open Questions / Decisions Pending
 
