@@ -1,13 +1,38 @@
 import { computed, type Signal, signal } from '@angular/core';
 import { type ModuleSize } from '@cobranza-apps/mfe-events';
 
+/**
+ * Constructor options for {@link DemoShellState}.
+ *
+ * The three `input*` signals are the raw Angular Inputs injected by the
+ * Shell. They serve as fallback values when no `shell:module-state` event
+ * has arrived yet.
+ */
 export interface DemoShellStateOptions {
   readonly inputSize: Signal<ModuleSize>;
   readonly inputIsCollapsed: Signal<boolean>;
   readonly inputIsFullscreen: Signal<boolean>;
 }
 
+/**
+ * Drag-and-drop lifecycle states pushed by the Shell via `shell:module-state`.
+ *
+ * - `'drag-start'` — the user started dragging this module.
+ * - `'drag-end'`   — the drag ended (may or may not have been dropped).
+ * - `'dropped'`    — the module was dropped into a new position.
+ *
+ * Optional field — `undefined` when the Shell does not support drag-and-drop.
+ */
 type DragState = 'drag-start' | 'drag-end' | 'dropped';
+
+/**
+ * Preview modes pushed by the Shell via `shell:module-state`.
+ *
+ * - `'collapsed'` — the Shell is showing a preview thumbnail rather than the
+ *   full module body.
+ *
+ * Optional field — `undefined` when the Shell does not support preview mode.
+ */
 type PreviewMode = 'collapsed';
 
 interface ShellStateSnapshot {
@@ -69,6 +94,13 @@ export class DemoShellState {
   readonly displayDragState = computed(() => this.state().dragState);
   readonly displayPreviewMode = computed(() => this.state().previewMode);
 
+  /**
+   * Merges a `shell:module-state` payload into the internal state signal.
+   *
+   * Called by {@link DemoShellListeners.onModuleState} after instance filtering.
+   * The `dragState` and `previewMode` fields are optional — they remain
+   * `undefined` when the Shell does not provide them.
+   */
   applyModuleState(state: {
     size: ModuleSize;
     width: number;
@@ -90,6 +122,11 @@ export class DemoShellState {
     }));
   }
 
+  /**
+   * Merges a `shell:visibility-changed` payload into the internal state signal.
+   *
+   * Called by {@link DemoShellListeners.onVisibilityChanged} after instance filtering.
+   */
   applyVisibility(payload: { visible: boolean; reason?: string }): void {
     this.state.update((current) => ({
       ...current,

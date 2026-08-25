@@ -64,15 +64,18 @@ export class DemoCreateFormComponent {
   readonly phone = signal(EMPTY_FORM.phone);
   readonly notes = signal(EMPTY_FORM.notes);
 
+  /** "Enviar" button handler — emits `primaryAction` for the parent to dispatch. */
   readonly onPrimary = (): void => {
     this.primaryAction.emit();
   };
 
+  /** "Reiniciar" button handler — resets all fields then emits `secondaryAction`. */
   readonly onSecondary = (): void => {
     this.resetForm();
     this.secondaryAction.emit();
   };
 
+  /** Resets every signal back to its initial empty-string value. */
   private resetForm(): void {
     this.fullName.set(EMPTY_FORM.fullName);
     this.taxId.set(EMPTY_FORM.taxId);

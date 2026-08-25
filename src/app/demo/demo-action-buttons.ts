@@ -1,11 +1,30 @@
 import { DemoDispatcher } from './demo-dispatcher';
 
+/**
+ * Describes a single action-bar button rendered by `DemoComponent`.
+ *
+ * The template iterates this array and binds `action` to the button's
+ * `(click)` handler. Labels are Spanish per project convention.
+ *
+ * `variant` maps to `CbaButtonComponent` visual variants.
+ */
 export interface ActionButtonConfig {
   readonly label: string;
   readonly variant: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success';
   readonly action: () => void;
 }
 
+/**
+ * Builds the fixed set of action buttons shown in the demo action bar.
+ *
+ * Each button delegates to a method on {@link DemoDispatcher}, which in turn
+ * dispatches the corresponding `mfe:*` event. The list is intentionally
+ * static — the demo does not support dynamic button injection.
+ *
+ * @param dispatcher - Instance-owned dispatcher; closures capture it so
+ *   each button fires events with the correct `instanceId`.
+ * @returns A readonly array consumed by the component template.
+ */
 export function createDemoActionButtons(dispatcher: DemoDispatcher): readonly ActionButtonConfig[] {
   return [
     { label: 'Actualizar título', variant: 'primary', action: () => dispatcher.cycleHeaderDemo() },
