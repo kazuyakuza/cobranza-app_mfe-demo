@@ -19,7 +19,6 @@ import {
 
 import { DemoComponent } from '../demo/demo.component';
 import { type DemoViewMode } from '../demo/demo-config';
-import { type DemoMinHeightReason } from '../demo/demo-min-height';
 
 const MOCK_INSTANCE_ID = 'demo-preview-0001';
 const MOCK_TABLE_ROWS = 5;
@@ -106,7 +105,7 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
   };
 
   readonly redeclareMinHeight = (): void => {
-    this.demoComponent?.declareMinHeightForPreview('content-change', this.debugMinHeightOverride());
+    this.demoComponent?.declareMinHeight('content-change', this.debugMinHeightOverride());
   };
 
   readonly emitModuleState = (): void => {
@@ -134,15 +133,17 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
   private safeParseProfile(value: string): Record<string, unknown> | undefined {
     try {
       const parsed = JSON.parse(value);
-      return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
-        ? (parsed as Record<string, unknown>)
-        : undefined;
+      return this.isPlainObject(parsed) ? parsed : undefined;
     } catch {
       return undefined;
     }
   }
 
-  /** Public so the template can call it from `(ngModelChange)` (templates cannot access private members). */
+  private isPlainObject(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+
+  /** Called from the template in `(ngModelChange)`; Angular template type-checking requires public access. */
   numberOrNull(value: string | null): number | undefined {
     if (value === null || value === '') return undefined;
     const parsed = Number(value);
