@@ -5,39 +5,34 @@
 ## Current State
 
 - **Date:** 2026-08-24
-- **Branch:** `feat/init-project-info-and-readme`
-- **Repository stage:** Early / greenfield.
-  - `src/` contains only `.gitkeep` (no Angular scaffolding yet).
-  - No `package.json`, no `angular.json`, no `federation.config.js` yet.
-  - `README.md` is still the base-project template (update pending — TODO line 2).
-  - `.nvmrc` pins Node `22.22.3`.
-- **Project info:** `brief.md` and `instructions.md` complete; `product.md`, `context.md`, `architecture.md`, `tech.md` just created; `.initialized` marker removed.
+- **Branch:** `feat/mfe-demo-phase0`
+- **Repository stage:** Phase 0 implementation in progress.
+  - Angular 22.1.2 standalone app scaffolded.
+  - Native Federation configured (`federation.config.js`, `angular.json`).
+  - `DemoComponent` stub implemented with signal Inputs and `DemoConfig` coercion.
+  - `DemoPreviewComponent` stub implemented as the standalone preview host.
+  - `@cobranza-apps/mfe-events` installed and `reflect-metadata` configured in `angular.json`.
 
 ## Current Work Focus
 
-Executing `.agent/todos/20260803/20260803-todo-0.md` via the Critical Workflow:
+Executing `.agent/todos/20260803/20260803-todo-1.md` via the Critical Workflow — Task E: README & Agent Notes.
 
-1. `initialize project info` — IN PROGRESS (this task: creating the 4 core project-info files).
-2. `update readme file` — PENDING (next task in the TODO file).
+1. Task 11 — Update `README.md` to reflect completed Phase 0 work and create `docs/phase0-agent-notes.md`.
 
 ## Recent Changes
 
-- Authored `.agent/project-info/brief.md` (full project brief for `mfe-demo`).
-- Created feature branch `feat/init-project-info-and-readme`.
-- Created `product.md`, `context.md`, `architecture.md`, `tech.md`.
-- Removed `.agent/project-info/.initialized` (Project Info Initialization complete).
+- Created front-end technical spec for Task D at `.kilo/plans/20260824-mfe-demo-phase0-taskD-frontend-spec.md`.
+- Updated `README.md` (Status, Dev Ports, Quick Start, Federation Configuration, Federation Identity, Project Structure, View Modes) to reflect completed Phase 0.
+- Created `docs/phase0-agent-notes.md` with federation identity, folder layout, and Phase 0 boundaries for AI agents.
 
 ## Immediate Next Steps
 
-1. **Task 2 (TODO line 2):** Update `README.md` to reflect `mfe-demo` (replace base-project template content): project purpose, stack, federation identity, dev modes, expected ports, and how to run.
-2. **After TODO completion:** Scaffold Angular 22 standalone app + Native Federation remote (`@angular-architects/native-federation`), `federation.config.js`, expose `./Component`, configure public path / CORS, and create the standalone preview host.
-3. Implement the exposed `DemoComponent` with Inputs from brief §3.2, events from brief §3.3/§3.4, `DemoConfig` from brief §3.6, and UI content from brief §4.
+1. Implement `DemoComponent` event dispatch and `shell:*` listeners per the spec.
+2. Implement `DemoPreviewComponent` controls (`size`, `view`, `title`) and `mfe:*` event logging.
+3. Proceed to subsequent Critical Workflow steps (implementation planning, code review, verification) for the remaining TODO tasks.
 
 ## Open Questions / Decisions Pending
 
-- **Federation remote name:** brief suggests `mfe-demo`; confirm exact string with Shell's Native Federation config.
-- **Exposed module path:** brief suggests `./Component`; confirm the exact exposed name agreed with the Shell.
-- **Dev ports:** Expected local ports for `mfe-demo` (standalone preview) and Shell origin for CORS / public path — to be documented in `tech.md` and `README.md` once decided.
 - **Optional inputs:** Whether the Shell passes pixel size / `minHeight` via Inputs or events (brief §3.2 optional row) — affects `architecture.md` Inputs table.
 
 ## Known Issues / Blockers

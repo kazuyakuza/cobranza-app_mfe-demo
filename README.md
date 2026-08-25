@@ -36,9 +36,7 @@ Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company B
 
 ## Status
 
-> **Early / greenfield.** `src/` currently contains only `.gitkeep`; there is no `package.json`, `angular.json`, or `federation.config.js` yet. `.nvmrc` pins Node `22.22.3`.
->
-> The Quick Start and Federation Configuration sections describe the **planned** setup and will become available after the Angular + Native Federation scaffolding task.
+> **Phase 0 complete.** The repository is a buildable Angular 22 Native Federation remote. `ng build` and `ng serve` work; the standalone preview host runs at `http://localhost:4201`. The default `'table'` view, identity panel, per-instance visual marker, and core `mfe:*` events (`module-ready`, `update-header`) are implemented. `'create-form'` and `'profile'` view bodies are placeholders ("Vista aún no implementada en Phase 0"); the full action-button set, local event log UI, and real Shell integration testing are deferred to a later phase.
 
 ## Tech Stack
 
@@ -66,8 +64,8 @@ Related packages: `@cobranza-apps/ui` (theme and components), `@cobranza-apps/mf
 | Concept | Value |
 | --------- | -------- |
 | Repo / app name | `mfe-demo` |
-| Federation remote name | `mfe-demo` (suggested; confirm with Shell) |
-| Exposed module | `./Component` (suggested; confirm with Shell) |
+| Federation remote name | `mfe-demo` |
+| Exposed module | `./Component` → `src/app/demo/demo.component.ts` (selector `cba-demo`) |
 | `moduleType` string in Shell | `demo` |
 | Config shape | Internal `DemoConfig` / `DemoViewMode` (lives only inside this repo) |
 | npm scope | Optional; not required for Phase 0 if loaded from URL |
@@ -79,7 +77,9 @@ Related packages: `@cobranza-apps/ui` (theme and components), `@cobranza-apps/mf
 
 ## Dev Ports & CORS
 
-> **TBD.** This section will document the standalone preview port and the Shell origin allowed for CORS / federation public path once the dev server is configured. No port numbers are invented here.
+- **Standalone preview:** `http://localhost:4201` (configured in `angular.json` → `architect.serve-original.options.port`).
+- **Shell (local dev):** run the Shell on its own port (see the Shell repo) and point its federation config at this remote's manifest: `http://localhost:4201/remoteEntry.json`.
+- **Public path / CORS:** the Angular dev server serves the Native Federation manifest (`remoteEntry.json`) at the dev server root; cross-origin loading is handled via import maps and `es-module-shims`. No extra CORS configuration is needed for local `localhost` dev. Confirm the exact `remoteEntry` URL and remote name against the Shell's federation config.
 
 ## Quick Start
 
@@ -89,25 +89,30 @@ Prerequisites:
 - npm (no global installs).
 
 ```bash
-# Install dependencies (after package.json exists)
+# Install dependencies
 npm install
 
-# Run standalone preview (after Angular + Native Federation scaffolding)
-npm start
+# Run the standalone preview (http://localhost:4201)
+npm run serve
 # or
-ng serve
+npx ng serve
 ```
 
-To run inside the Shell, start the Shell separately and add a Footer entry with `moduleType: 'demo'`. See the Shell repository for its run instructions.
+The standalone preview host (`DemoPreviewComponent`) at route `/` injects mock Inputs into `DemoComponent` and exposes controls for `size`, `view`, and `title`. Open the browser console to verify the dispatched `mfe:module-ready` and `mfe:update-header` events.
+
+To run inside the Shell, start the Shell separately and add a Footer entry with `moduleType: 'demo'`, pointing its federation config at `http://localhost:4201/remoteEntry.json` (remote name `mfe-demo`, exposed module `./Component`). See the Shell repository for its run instructions.
 
 ## Federation Configuration
 
-> **Pending scaffolding.** Planned `federation.config.js` shape:
+`federation.config.js` configures this app as a Native Federation remote:
 
-- Remote name: `mfe-demo`
-- Exposed module: `./Component` → standalone `DemoComponent`
-- Public path configured for cross-origin dev with the Shell
-- Shared dependencies aligned with Shell / `@cobranza-apps/ui`
+- **Remote name:** `mfe-demo`
+- **Exposed module:** `./Component` → `./src/app/demo/demo.component.ts` (standalone `DemoComponent`, selector `cba-demo`)
+- **Shared dependencies:** `shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto', includeSecondaries: false })` — aligned with the Shell and `@cobranza-apps/ui`.
+- **Skipped RxJS entry points:** `rxjs/ajax`, `rxjs/fetch`, `rxjs/testing`, `rxjs/webSocket`.
+- **Public path:** handled by the Angular dev server; the remote serves `remoteEntry.json` at `http://localhost:4201/remoteEntry.json` during local dev.
+
+Entry flow: `src/main.ts` calls `initFederation()` then dynamically imports `src/bootstrap.ts` to bootstrap the Angular application.
 
 See [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §6 for the federation & hosting reference.
 
@@ -138,6 +143,8 @@ interface DemoConfig {
 }
 ```
 
+The component coerces `data` into a validated `DemoConfig` via `coerceDemoConfig` (see `src/app/demo/demo-config.ts`): unknown or invalid `view` values fall back to `'table'`, non-string `title` is dropped, non-plain-object `profile` is dropped, and non-finite / negative `tableRows` falls back to the default (`5`). The Shell only ever sees `Record<string, unknown>` — `DemoConfig` is an internal convention of this repo and is **not** part of `@cobranza-apps/mfe-events`.
+
 Example Footer entries (Shell side):
 
 ```ts
@@ -150,29 +157,37 @@ Details: [`.agent/project-info/brief.md`](.agent/project-info/brief.md) §3.6 an
 
 ## Project Structure
 
-Planned `src/` layout (after scaffolding):
+Current `src/` layout:
 
 ```text
 src/
 ├── app/
-│   ├── demo/        # main exposed component + views
-│   ├── core/        # optional event-helper wrappers
-│   └── app.config.ts
-├── bootstrap.ts     # federation bootstrap if required
+│   ├── demo/
+│   │   ├── demo.component.ts        # main exposed standalone component (cba-demo)
+│   │   ├── demo.component.html
+│   │   ├── demo.component.scss
+│   │   ├── demo-config.ts           # DemoViewMode + DemoConfig + coerceDemoConfig
+│   │   └── views/
+│   │       └── demo-table/          # mock table sub-component (view === 'table')
+│   ├── demo-preview/                # standalone preview host (ng serve)
+│   ├── app.component.ts
+│   ├── app.config.ts
+│   └── app.routes.ts                # route '' → DemoPreviewComponent
+├── bootstrap.ts                     # Angular bootstrap (loaded after initFederation)
 ├── index.html
-└── styles.scss      # imports @cobranza-apps/ui theme
+├── main.ts                          # initFederation() → import('./bootstrap')
+└── styles.scss                      # imports @cobranza-apps/ui theme
 
-federation.config.js # Native Federation config (pending)
-public/
-package.json         # (pending)
-angular.json         # (pending)
-tsconfig*.json       # (pending)
-.nvmrc               # Node 22.22.3
+federation.config.js                 # Native Federation remote config
+angular.json                         # Angular CLI config (dev port 4201)
+package.json
+tsconfig*.json
+.nvmrc                               # Node 22.22.3
 README.md
-docs/                # optional short USAGE for agents
+docs/                                # agent / usage notes
 ```
 
-See [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §3 for the full architecture and component layout.
+See [`.agent/project-structure.md`](.agent/project-structure.md) for the maintained folder list and [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §3 for the architecture reference.
 
 ## Documentation & Project Info
 
@@ -186,6 +201,7 @@ See [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md)
 - [`.kilo/commands/critical-workflow.md`](.kilo/commands/critical-workflow.md) — critical workflow reference.
 - [`docs/how-to-write-todo-files.md`](docs/how-to-write-todo-files.md) — guide for writing TODO files.
 - [`docs/how-to-set-up-git.md`](docs/how-to-set-up-git.md) — guide for Git setup.
+- [`docs/phase0-agent-notes.md`](docs/phase0-agent-notes.md) — Phase 0 boundaries and folder layout notes for AI agents.
 
 ## For AI Agents
 
