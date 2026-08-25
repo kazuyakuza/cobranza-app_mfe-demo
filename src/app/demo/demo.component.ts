@@ -25,6 +25,15 @@ import { DemoTableComponent } from './views/demo-table/demo-table.component';
  * - Must remain multi-instance safe: every piece of state is derived from
  *   inputs, no shared singletons.
  *
+ * Identity panel:
+ *   Displays moduleType, short instanceId (full on hover), current size,
+ *   collapse/fullscreen flags, and active view label — all in Spanish.
+ *
+ * Visual instance marker:
+ *   A coloured left border (CSS custom property `--demo-instance-marker`)
+ *   derived from a stable hash of `instanceId`, so multiple co-located
+ *   instances are visually distinct at a glance.
+ *
  * Selector: `cba-demo`
  */
 export class DemoComponent {

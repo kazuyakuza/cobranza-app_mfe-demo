@@ -33,8 +33,19 @@ const SIZE_LABEL_SHORT = 'Mitad de ancho (50 %)';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 /**
- * Mock data table rendered by `DemoComponent` when `view === 'table'`.
- * Rows are generated deterministically from the `rowCount` input.
+ * Mock table sub-component rendered by `DemoComponent` when `view === 'table'`.
+ *
+ * Phase 0 placeholder — displays deterministic Spanish-locale mock rows
+ * (concepto / monto / fecha / estado) so the table layout can be verified
+ * at both 50 % and 100 % module widths without a real backend.
+ *
+ * Key decisions for future agents:
+ * - Rows are derived from `rowCount` via `computed()`, not stored as state.
+ * - Uses `CbaBadgeComponent` for estado pills and `CbaEmptyStateComponent`
+ *   when `rowCount === 0`.
+ * - `badgeVariantFor` maps Spanish estado strings to CbaBadge variants;
+ *   extend here if new estados are added.
+ * - All strings are Spanish-only per project constraints.
  */
 export class DemoTableComponent {
   /** Number of mock rows to render. Coerced to a non-negative finite number upstream. */
