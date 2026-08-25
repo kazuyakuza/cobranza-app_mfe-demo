@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { MFE_EVENTS, SCHEMA_VERSION, type ModuleSize } from '@cobranza-apps/mfe-events';
+import { type ModuleSize } from '@cobranza-apps/mfe-events';
 
-import { coerceDemoConfig, type DemoViewMode } from './demo-config';
+import { coerceDemoConfig } from './demo-config';
 
 @Component({
   selector: 'cba-demo',
@@ -19,9 +19,5 @@ export class DemoComponent {
   readonly data = input<Record<string, unknown> | undefined>(undefined);
 
   readonly config = computed(() => coerceDemoConfig(this.data()));
-  readonly view = computed<DemoViewMode>(() => this.config().view ?? 'table');
-  readonly sizeLabel = computed(() => (this.size() === '100%' ? 'long' : 'short'));
-
-  readonly schemaVersion = SCHEMA_VERSION;
-  readonly readyEventName = MFE_EVENTS.MODULE_READY;
+  readonly view = computed(() => this.config().view ?? 'table');
 }
