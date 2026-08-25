@@ -7,14 +7,14 @@
     <cba-input
       label="Nombre"
       placeholder="Ej: Juan Pérez"
-      [ngModel]="nombre()"
-      (ngModelChange)="nombre.set($event)" />
+      [ngModel]="fullName()"
+      (ngModelChange)="fullName.set($event)" />
 
     <cba-input
       label="Documento / DNI"
       placeholder="Ej: 30.111.222"
-      [ngModel]="documento()"
-      (ngModelChange)="documento.set($event)" />
+      [ngModel]="taxId()"
+      (ngModelChange)="taxId.set($event)" />
 
     <cba-input
       label="Email"
@@ -27,15 +27,15 @@
       label="Teléfono"
       type="tel"
       placeholder="Ej: +54 9 11 1234-5678"
-      [ngModel]="telefono()"
-      (ngModelChange)="telefono.set($event)" />
+      [ngModel]="phone()"
+      (ngModelChange)="phone.set($event)" />
 
     <cba-input
       class="demo-create-form__field--wide"
       label="Observaciones"
       placeholder="Notas de prueba"
-      [ngModel]="observaciones()"
-      (ngModelChange)="observaciones.set($event)" />
+      [ngModel]="notes()"
+      (ngModelChange)="notes.set($event)" />
   </div>
 
   <div class="demo-create-form__actions">

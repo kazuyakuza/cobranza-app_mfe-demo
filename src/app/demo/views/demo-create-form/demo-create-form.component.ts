@@ -11,26 +11,26 @@ import { CbaButtonComponent, CbaInputComponent } from '@cobranza-apps/ui';
 /**
  * Field model for the simulated create form.
  *
- * Spanish-labelled test fields that mirror `@cobranza-apps/entities` `Client`
- * (fullName → nombre, taxId → documento, email, phone → teléfono,
- * notes → observaciones). Kept as local Spanish strings for clarity in the
- * demo UI; no real validation or API submission occurs.
+ * Entity-aligned form model mirroring `@cobranza-apps/entities` `Client`
+ * field names (`fullName`, `taxId`, `email`, `phone`, `notes`). UI labels
+ * stay Spanish (Nombre, Documento / DNI, Email, Teléfono, Observaciones);
+ * values are plain `string`. No real validation or API submission occurs.
  */
 interface DemoCreateFormModel {
-  readonly nombre: string;
-  readonly documento: string;
+  readonly fullName: string;
+  readonly taxId: string;
   readonly email: string;
-  readonly telefono: string;
-  readonly observaciones: string;
+  readonly phone: string;
+  readonly notes: string;
 }
 
 /** Initial empty state for all form fields — used on init and on "Reiniciar". */
 const EMPTY_FORM: DemoCreateFormModel = {
-  nombre: '',
-  documento: '',
+  fullName: '',
+  taxId: '',
   email: '',
-  telefono: '',
-  observaciones: '',
+  phone: '',
+  notes: '',
 };
 
 @Component({
@@ -44,12 +44,11 @@ const EMPTY_FORM: DemoCreateFormModel = {
 /**
  * Simulated create-form view for `mfe-demo` (view === 'create-form').
  *
- * Renders five Spanish-labelled test fields (nombre, documento, email,
- * teléfono, observaciones) plus a primary "Guardar (simulado)" and a
- * secondary "Reiniciar" button. No real submit, no API, no validation.
- *
- * Field names mirror `@cobranza-apps/entities` `Client` (fullName, taxId,
- * email, phone, notes) but are kept as local Spanish strings for clarity.
+ * Renders five Spanish-labelled test fields (Nombre, Documento / DNI, Email,
+ * Teléfono, Observaciones) backed by entity-aligned internal model fields
+ * (`fullName`, `taxId`, `email`, `phone`, `notes`) that mirror
+ * `@cobranza-apps/entities` `Client`. UI labels remain Spanish; internal
+ * values are plain `string`. No real submit, no API, no validation.
  *
  * Emits `primaryAction` / `secondaryAction` outputs; the parent
  * `DemoComponent` dispatches the corresponding `mfe:*` events.
@@ -59,11 +58,11 @@ export class DemoCreateFormComponent {
   readonly primaryAction = output<void>();
   readonly secondaryAction = output<void>();
 
-  readonly nombre = signal(EMPTY_FORM.nombre);
-  readonly documento = signal(EMPTY_FORM.documento);
+  readonly fullName = signal(EMPTY_FORM.fullName);
+  readonly taxId = signal(EMPTY_FORM.taxId);
   readonly email = signal(EMPTY_FORM.email);
-  readonly telefono = signal(EMPTY_FORM.telefono);
-  readonly observaciones = signal(EMPTY_FORM.observaciones);
+  readonly phone = signal(EMPTY_FORM.phone);
+  readonly notes = signal(EMPTY_FORM.notes);
 
   readonly onPrimary = (): void => {
     this.primaryAction.emit();
@@ -75,10 +74,10 @@ export class DemoCreateFormComponent {
   };
 
   private resetForm(): void {
-    this.nombre.set(EMPTY_FORM.nombre);
-    this.documento.set(EMPTY_FORM.documento);
+    this.fullName.set(EMPTY_FORM.fullName);
+    this.taxId.set(EMPTY_FORM.taxId);
     this.email.set(EMPTY_FORM.email);
-    this.telefono.set(EMPTY_FORM.telefono);
-    this.observaciones.set(EMPTY_FORM.observaciones);
+    this.phone.set(EMPTY_FORM.phone);
+    this.notes.set(EMPTY_FORM.notes);
   }
 }
