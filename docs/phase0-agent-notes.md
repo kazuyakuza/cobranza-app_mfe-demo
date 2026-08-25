@@ -1,6 +1,6 @@
 # Phase 0 — Agent Notes
 
-> Quick reference for AI agents working on `mfe-demo`. Source of truth: [`brief.md`](../.agent/project-info/brief.md) and the Phase 0 TODO at [`20260803-todo-1.md`](../.agent/todos/20260803/20260803-todo-1.md).
+> Quick reference for AI agents working on `mfe-demo`. Source of truth: [`brief.md`](../.agent/project-info/brief.md).
 
 ## Federation Identity
 
