@@ -4,11 +4,13 @@
 > Source of truth: [`architecture.md`](../.agent/project-info/architecture.md) §4.2 and §8.
 
 ## Table of Contents
+
 - [Action bar](#action-bar)
 - [Action buttons → events](#action-buttons--events)
 - [Event payload contract](#event-payload-contract)
 - [Create-form handlers](#create-form-handlers)
 - [Lifecycle events](#lifecycle-events)
+- [Min-height declaration (mfe:update-min-height)](#min-height-declaration-mfeupdate-min-height)
 - [Related files](#related-files)
 
 ## Action bar
@@ -46,6 +48,22 @@ The `'create-form'` view emits `primaryAction` / `secondaryAction` outputs consu
 
 - `mfe:module-ready` — dispatched once on `ngOnInit` (`DemoDispatcher.ready()`).
 - `mfe:update-header` — dispatched on init (title effect) and whenever `resolvedTitle` changes (view switch via `data`).
+
+## Min-height declaration (`mfe:update-min-height`)
+
+Not triggered by an action button. Dispatched automatically by `DemoComponent`:
+
+| Moment | `reason` | Notes |
+| ------- | -------- | ----- |
+| `ngOnInit` | `'init'` | First declaration after mount. |
+| `config.view` change | `'view-change'` | When `data` switches the view. |
+| `tableRows` change (table view) | `'content-change'` | When the mock row count changes. |
+
+Payload (identity-bearing): `{ schemaVersion, moduleType, instanceId, minHeightPx, reason }`.
+
+Per-view `minHeightPx`: `table` 320, `create-form` 400, `profile` 280. Computed by `computeMinHeightPx(view)` in `demo-min-height.ts`.
+
+See [`mfe-demo-shell-usage.md`](mfe-demo-shell-usage.md) §Min-height contract.
 
 ## Related files
 

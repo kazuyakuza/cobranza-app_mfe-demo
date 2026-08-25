@@ -5,6 +5,7 @@
 > Source of truth: [`brief.md`](../.agent/project-info/brief.md) §1 and §3, [`architecture.md`](../.agent/project-info/architecture.md) §4 and §8.
 
 ## Table of Contents
+
 - [Debugging surfaces](#debugging-surfaces)
 - [What the Shell can test with mfe-demo](#what-the-shell-can-test-with-mfe-demo)
 - [Incoming events the MFE listens for](#incoming-events-the-mfe-listens-for)
@@ -40,12 +41,14 @@ A collapsible `cba-accordion` labelled "Payload (data)" shows a pretty-printed J
 | Error path | Test Shell error-handling UI via `mfe:module-error`. |
 | Configuration transport | Inspect the Footer `config` → `data` round-trip live in the data payload viewer. |
 | Visibility | Send `shell:visibility-changed`; the identity panel shows a Visible/Oculto label with the reason. |
+| Min-height | The demo emits `mfe:update-min-height` on init / view-change / content-change; the Shell should persist `minHeightPx` and apply it as CSS `min-height`. See [`mfe-demo-shell-usage.md`](mfe-demo-shell-usage.md). |
+| Drag & preview | Send `shell:module-state` with `dragState` (`'drag-start' \| 'drag-end' \| 'dropped'`) or `previewMode` (`'collapsed'`); the identity panel + event log reflect them. |
 
 ## Incoming events the MFE listens for
 
 | Event | Filter | Demo behaviour |
 | ----- | ------ | -------------- |
-| `shell:module-state` | `instanceId` + `moduleType === 'demo'` | Updates `DemoShellState` (size, width/height px, isCollapsed, isFullscreen); identity panel reflows. |
+| `shell:module-state` | `instanceId` + `moduleType === 'demo'` | Updates `DemoShellState` (size, width/height px, isCollapsed, isFullscreen, optional `dragState`, optional `previewMode`); identity panel reflows. |
 | `shell:visibility-changed` | `instanceId` + `moduleType === 'demo'` | Updates visibility label + reason in the identity panel. |
 | `shell:theme-changed` | global (no instance filter) | Recorded in the event log only. |
 

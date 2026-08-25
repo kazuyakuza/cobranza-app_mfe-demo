@@ -36,16 +36,16 @@ Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company B
 
 ## Status
 
-> **Phase 1 in progress.**
+> **Phase 2 complete.**
 >
 > - Buildable Angular 22 Native Federation remote; `ng build` and `ng serve` work.
-> - Standalone preview host runs at `http://localhost:4201`.
-> - All three body views implemented and switchable via `DemoConfig.view`: `table`, `create-form`, `profile`.
-> - Identity panel, per-instance visual marker, view-driven title behaviour, and core `mfe:*` events implemented.
-> - Full action-button set (8 buttons) dispatching `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:request-add-module`, `mfe:module-error`.
-> - Per-instance event log (last 25 events) and collapsible data payload viewer.
-> - Listens to `shell:module-state`, `shell:visibility-changed`, and `shell:theme-changed` (filtered by `instanceId`).
-> - Standalone preview exposes view/data/size controls and simulated shell events.
+> - Standalone preview host runs at `http://localhost:4201` (`npm run serve`).
+> - Three body views (`table`, `create-form`, `profile`) switchable via `DemoConfig.view`.
+> - Identity panel, per-instance visual marker, action bar (8 buttons), per-instance event log (last 25), and collapsible data payload viewer.
+> - Min-height contract wired via `@cobranza-apps/mfe-events@^0.6.0`: the demo dispatches `mfe:update-min-height` on init / view-change / content-change with per-view `minHeightPx` (table 320, create-form 400, profile 280).
+> - `shell:module-state` listener captures `dragState` and `previewMode` when the Shell sends them.
+> - Multi-instance state isolation verified (event log, form state, declared min-height, colour marker).
+> - Standalone preview exercises min-height re-dispatch and debug override.
 
 ## Tech Stack
 
@@ -134,8 +134,8 @@ The MFE communicates with the Shell only via Angular Inputs and `@cobranza-apps/
 | Direction | Channel | Details |
 | --------- | ------- | ------- |
 | Shell → MFE | Component Inputs | `moduleType`, `instanceId`, `size`, `isCollapsed`, `isFullscreen`, `data`, optional pixel-size / minHeight inputs. |
-| MFE → Shell | `@cobranza-apps/mfe-events` | `mfe:module-ready`, `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:module-error`, optionally `mfe:request-add-module`. |
-| Shell → MFE | `@cobranza-apps/mfe-events` | `shell:module-state`, `shell:visibility-changed`, `shell:theme-changed` (filter by `instanceId`). |
+| MFE → Shell | `@cobranza-apps/mfe-events` | `mfe:module-ready`, `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:module-error`, `mfe:request-add-module`, `mfe:update-min-height` (declares preferred `minHeightPx`; Shell persists + applies as CSS). |
+| Shell → MFE | `@cobranza-apps/mfe-events` | `shell:module-state` (size, width/height, isCollapsed, isFullscreen, optional `dragState` / `previewMode`), `shell:visibility-changed`, `shell:theme-changed` (filter by `instanceId`). |
 
 Full tables and critical paths: [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §4 and §8.
 
@@ -203,6 +203,7 @@ See [`.agent/project-structure.md`](.agent/project-structure.md) for the maintai
 - [`docs/views-and-config.md`](docs/views-and-config.md) — the three views and how to select them via Footer `config` / `data` / `initialData`.
 - [`docs/actions-and-events.md`](docs/actions-and-events.md) — action buttons and which `mfe:*` events they fire.
 - [`docs/shell-integration-guide.md`](docs/shell-integration-guide.md) — event log & data viewer debugging surfaces and how the Shell can use `mfe-demo` as a test harness.
+- [`docs/mfe-demo-shell-usage.md`](docs/mfe-demo-shell-usage.md) — ready-to-copy Footer definitions, min-height contract, and manual test scenarios for Shell developers.
 
 ## For AI Agents
 
