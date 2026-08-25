@@ -30,8 +30,9 @@
 
 ## Event payload contract
 
-- Every outgoing event includes `schemaVersion` (from `SCHEMA_VERSION`), `moduleType`, and `instanceId`.
-- `mfe:show-notification` and `mfe:request-add-module` build their payloads directly (see `demo-dispatcher.ts`); the identity-bearing events use the internal `withIdentity` helper.
+- Identity-bearing events (`mfe:module-ready`, `mfe:update-header`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:module-error`) include `schemaVersion` (from `SCHEMA_VERSION`), `moduleType`, and `instanceId` via the internal `withIdentity` helper.
+- `mfe:show-notification` is built directly and includes `schemaVersion`, `type`, and `message` only — it does not carry identity fields.
+- `mfe:request-add-module` is built directly and includes `schemaVersion`, `moduleType: 'demo'`, `title`, and `initialData` — it does not include `instanceId`.
 - All dispatches go through `DemoDispatcher.send`, which records the entry in `DemoEventLog` (direction `'out'`) and calls `console.log('[mfe-demo] dispatch', name, payload)` before `dispatchMfeEvent`.
 
 ## Create-form handlers

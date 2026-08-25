@@ -19,7 +19,7 @@
 | `view` value | Spanish label | Component | Selector | Body content |
 | ------------ | ------------- | --------- | -------- | ------------ |
 | `table` | Tabla | `DemoTableComponent` | `app-demo-table` | Mock data table with `config.tableRows` rows (default 5). Responsive wrapper; reflows at 50 % / 100 %. |
-| `create-form` | Alta | `DemoCreateFormComponent` | `app-demo-create-form` | Simulated 2-column form (nombre, documento, email, teléfono, observaciones). No real submit / no API. Primary button dispatches `mfe:show-notification` (success) + `mfe:update-header` (status `success`); secondary button resets the form and dispatches an info notification. |
+| `create-form` | Alta | `DemoCreateFormComponent` | `app-demo-create-form` | Simulated 2-column form (nombre, documento, email, teléfono, observaciones). No real submit / no API. Form actions dispatch events documented in [`actions-and-events.md`](actions-and-events.md). |
 | `profile` | Perfil | `DemoProfileComponent` | `app-demo-profile` | Read-only `<dl>` key-value card from `config.profile`. Falls back to Spanish mock defaults (nombre, dni, email, saldo, estado) when `profile` is absent. `estado` rendered as a colour-coded `cba-badge`. |
 
 ## How a view is selected

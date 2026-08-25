@@ -25,26 +25,28 @@ A collapsible `cba-accordion` labelled "Payload (data)" shows a pretty-printed J
 
 ## What the Shell can test with mfe-demo
 
+> Button-triggered `mfe:*` events are documented in [`actions-and-events.md`](actions-and-events.md). The table below focuses on the Shell feature being exercised.
+
 | Shell functionality | How mfe-demo helps |
 | ------------------- | ------------------ |
-| Multi-instance | Add several `demo` Footer entries; each instance gets a unique `instanceId` and a distinct visual marker (hue derived from `instanceId`). Event logs stay isolated per instance. |
-| 50 % / 100 % sizing | Toggle the `size` Input or send `shell:module-state`; the table/form/profile reflow and the identity panel updates its size label. |
+| Multi-instance | Add several `demo` Footer entries; each instance gets a unique `instanceId` and a distinct visual marker. Event logs stay isolated per instance. |
+| 50 % / 100 % sizing | Toggle the `size` Input or send `shell:module-state`; the views reflow and the identity panel updates its size label. |
 | Collapse / fullscreen | Toggle `isCollapsed` / `isFullscreen` Inputs or send `shell:module-state`; identity panel badges update. |
-| Header title & status | Use the "Actualizar título" button or send a `data` Input with a `title`; `mfe:update-header` updates the Shell header. |
-| Notifications | Three buttons dispatch `mfe:show-notification` (success / warning / error) so the Shell toast pipeline can be verified. |
-| Fullscreen request | "Pantalla completa" dispatches `mfe:request-fullscreen` so the Shell can test its fullscreen transition + the resulting `shell:module-state` echo. |
-| Module removal | "Quitar módulo" dispatches `mfe:request-remove` so the Shell can test instance removal. |
-| Add-module flow | "Agregar instancia" dispatches `mfe:request-add-module` with `initialData`; the Shell can test creating a new pre-configured instance. |
-| Error path | "Simular error" dispatches `mfe:module-error` so the Shell can test its error-handling UI. |
-| Configuration transport | Footer `config` → `data` round-trip can be inspected live in the data payload viewer. |
-| Visibility | Send `shell:visibility-changed`; the identity panel shows a Visible/Oculto badge with the reason. |
+| Header title & status | Update via the "Actualizar título" button or a `data` Input with `title`; see [`actions-and-events.md`](actions-and-events.md) for the payload. |
+| Notifications | Verify the Shell toast pipeline with the three notification buttons. |
+| Fullscreen request | Test the Shell fullscreen transition and the resulting `shell:module-state` echo. |
+| Module removal | Test instance removal. |
+| Add-module flow | Test creating a new pre-configured instance via `mfe:request-add-module`. |
+| Error path | Test Shell error-handling UI via `mfe:module-error`. |
+| Configuration transport | Inspect the Footer `config` → `data` round-trip live in the data payload viewer. |
+| Visibility | Send `shell:visibility-changed`; the identity panel shows a Visible/Oculto label with the reason. |
 
 ## Incoming events the MFE listens for
 
 | Event | Filter | Demo behaviour |
 | ----- | ------ | -------------- |
 | `shell:module-state` | `instanceId` + `moduleType === 'demo'` | Updates `DemoShellState` (size, width/height px, isCollapsed, isFullscreen); identity panel reflows. |
-| `shell:visibility-changed` | `instanceId` + `moduleType === 'demo'` | Updates visibility badge + reason in the identity panel. |
+| `shell:visibility-changed` | `instanceId` + `moduleType === 'demo'` | Updates visibility label + reason in the identity panel. |
 | `shell:theme-changed` | global (no instance filter) | Recorded in the event log only. |
 
 ## Standalone preview vs loaded by Shell

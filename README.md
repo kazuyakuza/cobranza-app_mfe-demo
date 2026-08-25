@@ -36,7 +36,16 @@ Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company B
 
 ## Status
 
-> **Phase 1 in progress.** The repository is a buildable Angular 22 Native Federation remote. `ng build` and `ng serve` work; the standalone preview host runs at `http://localhost:4201`. All three body views are implemented and switchable via `DemoConfig.view`: `'table'` (mock data table), `'create-form'` (simulated form with no real API), and `'profile'` (read-only profile card with mock defaults). The identity panel, per-instance visual marker, view-driven title behaviour, and core `mfe:*` events (`module-ready`, `update-header`, `show-notification`) are implemented. The full action-button set (8 buttons dispatching `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:request-add-module`, `mfe:module-error`), the per-instance local event log (last 25 in/out events), the collapsible data payload viewer, and the `shell:module-state` / `shell:visibility-changed` / `shell:theme-changed` listeners (filtered by `instanceId`) are implemented. The standalone preview host exposes controls for view switching, sample data, size/collapse/fullscreen toggles, and simulated shell events, and captures every outgoing `mfe:*` event in the console.
+> **Phase 1 in progress.**
+>
+> - Buildable Angular 22 Native Federation remote; `ng build` and `ng serve` work.
+> - Standalone preview host runs at `http://localhost:4201`.
+> - All three body views implemented and switchable via `DemoConfig.view`: `table`, `create-form`, `profile`.
+> - Identity panel, per-instance visual marker, view-driven title behaviour, and core `mfe:*` events implemented.
+> - Full action-button set (8 buttons) dispatching `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:request-add-module`, `mfe:module-error`.
+> - Per-instance event log (last 25 events) and collapsible data payload viewer.
+> - Listens to `shell:module-state`, `shell:visibility-changed`, and `shell:theme-changed` (filtered by `instanceId`).
+> - Standalone preview exposes view/data/size controls and simulated shell events.
 
 ## Tech Stack
 
@@ -132,38 +141,11 @@ Full tables and critical paths: [`.agent/project-info/architecture.md`](.agent/p
 
 ## View Modes (`DemoConfig`)
 
-The Shell transports opaque configuration through the `data` Input. `mfe-demo` interprets it internally as `DemoConfig` (this type lives only inside this repo; the Shell only sees `Record<string, unknown>`):
+The Shell transports opaque configuration through the `data` Input. `mfe-demo` interprets it internally as `DemoConfig`; the Shell only sees `Record<string, unknown>`.
 
-```ts
-type DemoViewMode = 'table' | 'create-form' | 'profile';
+Supported views: `'table'` (mock data table), `'create-form'` (simulated form), `'profile'` (read-only profile card).
 
-interface DemoConfig {
-  view?: DemoViewMode;        // default: 'table'
-  title?: string;             // pushed via mfe:update-header on init
-  profile?: Record<string, unknown>; // mock data when view === 'profile'
-  tableRows?: number;         // mock rows when view === 'table'
-}
-```
-
-The component coerces `data` into a validated `DemoConfig` via `coerceDemoConfig` (see `src/app/demo/demo-config.ts`): unknown or invalid `view` values fall back to `'table'`, non-string `title` is dropped, non-plain-object `profile` is dropped, and non-finite / negative `tableRows` falls back to the default (`5`). The Shell only ever sees `Record<string, unknown>` — `DemoConfig` is an internal convention of this repo and is **not** part of `@cobranza-apps/mfe-events`.
-
-**View details:**
-
-- **`'table'`** — `DemoTableComponent` renders a mock data table with `config.tableRows` rows. Includes a responsive wrapper (`table-responsive`) for narrow widths.
-- **`'create-form'`** — `DemoCreateFormComponent` renders a simulated 2-column form (nombre, documento, email, teléfono, observaciones). No real submit or API call; the primary button dispatches `mfe:show-notification` (success) and `mfe:update-header` (status: `success`).
-- **`'profile'`** — `DemoProfileComponent` renders a read-only `<dl>` key-value card from `config.profile`. Falls back to Spanish mock defaults (nombre, DNI, email, saldo, estado) when `profile` is absent. The `estado` field is shown as a colour-coded badge.
-
-**Title behaviour:** When `config.title` is present, it is used for `mfe:update-header`. When absent, the title defaults to `"Demo – <ViewLabel>"` (e.g. `"Demo – Tabla"`, `"Demo – Alta"`, `"Demo – Perfil"`) and auto-updates when the view changes.
-
-Example Footer entries (Shell side):
-
-```ts
-{ moduleType: 'demo', label: 'Demo – Tabla',  config: { view: 'table' } },
-{ moduleType: 'demo', label: 'Demo – Alta',   config: { view: 'create-form', title: 'Alta simulada' } },
-{ moduleType: 'demo', label: 'Demo – Perfil', config: { view: 'profile', title: 'Cliente demo', profile: { nombre: 'Juan Pérez', dni: '30111222', saldo: 15000 } } }
-```
-
-Details: [`.agent/project-info/brief.md`](.agent/project-info/brief.md) §3.6 and [`.agent/project-info/architecture.md`](.agent/project-info/architecture.md) §5.
+Full field reference, coercion rules, title behaviour, and example Shell Footer entries: [`docs/views-and-config.md`](docs/views-and-config.md).
 
 ## Project Structure
 
