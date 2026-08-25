@@ -6,6 +6,7 @@ import {
   input,
   OnDestroy,
   OnInit,
+  signal,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
@@ -19,11 +20,17 @@ import {
   type ModuleSize,
 } from '@cobranza-apps/mfe-events';
 
-import { coerceDemoConfig, defaultTitleForView, viewModeToSpanishLabel } from './demo-config';
+import {
+  coerceDemoConfig,
+  defaultTitleForView,
+  type DemoViewMode,
+  viewModeToSpanishLabel,
+} from './demo-config';
 import { DemoDispatcher } from './demo-dispatcher';
 import { DemoEventLog, MAX_LOG_ENTRIES } from './demo-event-log';
 import { DemoShellState } from './demo-shell-state';
 import { hashString, truncateInstanceId } from './demo-utils';
+import { computeMinHeightPx, type DemoMinHeightReason } from './demo-min-height';
 import { DemoCreateFormComponent } from './views/demo-create-form/demo-create-form.component';
 import { DemoProfileComponent } from './views/demo-profile/demo-profile.component';
 import { DemoTableComponent } from './views/demo-table/demo-table.component';
@@ -95,6 +102,8 @@ export class DemoComponent implements OnInit, OnDestroy {
   readonly isFullscreen = input.required<boolean>();
   readonly data = input<Record<string, unknown> | undefined>(undefined);
 
+  readonly lastDeclaredMinHeightPx = signal<number | undefined>(undefined);
+
   readonly config = computed(() => coerceDemoConfig(this.data()));
   readonly view = computed(() => this.config().view ?? 'table');
   readonly viewLabel = computed(() => viewModeToSpanishLabel(this.view()));
@@ -145,6 +154,27 @@ export class DemoComponent implements OnInit, OnDestroy {
         previousTitle = title;
       }
     });
+
+    let previousView: DemoViewMode | undefined;
+    effect(() => {
+      const view = this.view();
+      if (previousView !== undefined && view !== previousView) {
+        this.declareMinHeight('view-change');
+      }
+      previousView = view;
+    });
+
+    let previousRowCount: number | undefined;
+    effect(() => {
+      if (this.view() !== 'table') {
+        return;
+      }
+      const rowCount = this.config().tableRows ?? 0;
+      if (previousRowCount !== undefined && rowCount !== previousRowCount) {
+        this.declareMinHeight('content-change');
+      }
+      previousRowCount = rowCount;
+    });
   }
 
   readonly onCreateFormPrimary = (): void => {
@@ -155,6 +185,18 @@ export class DemoComponent implements OnInit, OnDestroy {
   readonly onCreateFormSecondary = (): void => {
     this.dispatcher.showNotification('info', 'Formulario reiniciado');
   };
+
+  private declareMinHeight(reason: DemoMinHeightReason, overridePx?: number): void {
+    const view = this.view();
+    const minHeightPx = overridePx !== undefined ? overridePx : computeMinHeightPx(view);
+    this.lastDeclaredMinHeightPx.set(minHeightPx);
+    this.dispatcher.updateMinHeight(minHeightPx, reason);
+  }
+
+  /** Exposed only for the standalone preview host; not part of the public Shell contract. */
+  declareMinHeightForPreview(reason: DemoMinHeightReason, overridePx?: number): void {
+    this.declareMinHeight(reason, overridePx);
+  }
 
   private readonly matchesThisInstance = (detail: { instanceId: string; moduleType: string }): boolean =>
     detail.instanceId === this.instanceId() && detail.moduleType === this.moduleType();
@@ -181,6 +223,7 @@ export class DemoComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.dispatcher.ready();
     this.attachShellListeners();
+    this.declareMinHeight('init');
   }
 
   ngOnDestroy(): void {

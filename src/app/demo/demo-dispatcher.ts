@@ -5,9 +5,11 @@ import {
   SCHEMA_VERSION,
   type MfeEventMap,
   type ModuleStatus,
+  type UpdateMinHeightPayload,
 } from '@cobranza-apps/mfe-events';
 
 import { type DemoEventLog } from './demo-event-log';
+import { type DemoMinHeightReason } from './demo-min-height';
 
 export interface DemoDispatcherOptions {
   readonly moduleType: Signal<string>;
@@ -41,7 +43,6 @@ const HEADER_DEMOS: ReadonlyArray<HeaderDemo> = [
  *   (`schemaVersion`, `moduleType`, `instanceId`) via {@link withIdentity}.
  * - Records every dispatched event in the instance-owned {@link DemoEventLog}
  *   (direction `'out'`) so the local event-log UI can show it.
- * - Logs the payload to the browser console for quick debugging.
  * - Exposes {@link cycleHeaderDemo}, which rotates through a fixed list of
  *   title/status combinations (`HEADER_DEMOS`) so the "Actualizar título"
  *   action button can demo several header states without extra wiring.
@@ -97,6 +98,13 @@ export class DemoDispatcher {
     );
   }
 
+  updateMinHeight(minHeightPx: number, reason: DemoMinHeightReason): void {
+    this.send(
+      MFE_EVENTS.UPDATE_MIN_HEIGHT,
+      this.withIdentity({ minHeightPx, reason } as UpdateMinHeightPayload),
+    );
+  }
+
   cycleHeaderDemo(): void {
     const nextIndex = (this.headerDemoIndex() + 1) % HEADER_DEMOS.length;
     this.headerDemoIndex.set(nextIndex);
@@ -115,7 +123,6 @@ export class DemoDispatcher {
 
   private send<K extends keyof MfeEventMap>(name: K, payload: MfeEventMap[K]): void {
     this.options.eventLog.add({ direction: 'out', eventType: name, payload });
-    console.log('[mfe-demo] dispatch', name, payload);
     dispatchMfeEvent(name, payload);
   }
 }
