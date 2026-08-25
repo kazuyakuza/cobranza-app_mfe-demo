@@ -1,0 +1,37 @@
+:host {
+  display: block;
+}
+
+.demo-profile {
+  display: block;
+}
+
+.demo-profile__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--cba-space-2);
+  margin: 0;
+}
+
+.demo-profile__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cba-space-1);
+  padding: var(--cba-space-2) 0;
+  border-bottom: 1px solid var(--cba-border-subtle);
+}
+
+.demo-profile__item:last-child {
+  border-bottom: none;
+}
+
+.demo-profile__label {
+  color: var(--cba-text-secondary);
+  font-size: var(--cba-font-size-caption);
+}
+
+.demo-profile__value {
+  color: var(--cba-text-primary);
+  font-size: var(--cba-font-size-body);
+  margin: 0;
+}

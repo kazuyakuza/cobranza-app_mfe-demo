@@ -1,0 +1,17 @@
+<div class="demo-profile" [attr.data-size]="size()">
+  <cba-card>
+    <div cbaCardHeader>
+      <h2 class="cba-text-heading-md">Ficha del cliente</h2>
+      <cba-badge [variant]="estadoBadgeVariant()">{{ estadoValue() }}</cba-badge>
+    </div>
+
+    <dl class="demo-profile__list">
+      @for (field of fields(); track field.label) {
+        <div class="demo-profile__item">
+          <dt class="demo-profile__label">{{ field.label }}</dt>
+          <dd class="demo-profile__value">{{ field.value }}</dd>
+        </div>
+      }
+    </dl>
+  </cba-card>
+</div>
