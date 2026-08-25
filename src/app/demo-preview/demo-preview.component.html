@@ -73,7 +73,7 @@
       <span class="cba-text-small">Arrastre (dragState)</span>
       <select
         [ngModel]="simulatedDragState()"
-        (ngModelChange)="simulatedDragState.set(stringOrUndefined($event))"
+        (ngModelChange)="simulatedDragState.set(dragStateFromEvent($event))"
         name="simulatedDragState">
         <option [ngValue]="undefined">—</option>
         <option value="drag-start">drag-start</option>
@@ -86,7 +86,7 @@
       <span class="cba-text-small">Modo preview (previewMode)</span>
       <select
         [ngModel]="simulatedPreviewMode()"
-        (ngModelChange)="simulatedPreviewMode.set(stringOrUndefined($event))"
+        (ngModelChange)="simulatedPreviewMode.set(previewModeFromEvent($event))"
         name="simulatedPreviewMode">
         <option [ngValue]="undefined">—</option>
         <option value="collapsed">collapsed</option>

@@ -142,13 +142,16 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private numberOrNull(value: string | null): number | undefined {
+  /** Public so the template can call it from `(ngModelChange)` (templates cannot access private members). */
+  numberOrNull(value: string | null): number | undefined {
     if (value === null || value === '') return undefined;
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : undefined;
   }
 
-  private stringOrUndefined(value: string): string | undefined {
-    return value === '' ? undefined : value;
-  }
+  readonly dragStateFromEvent = (value: string): 'drag-start' | 'drag-end' | 'dropped' | undefined =>
+    value === 'drag-start' || value === 'drag-end' || value === 'dropped' ? value : undefined;
+
+  readonly previewModeFromEvent = (value: string): 'collapsed' | undefined =>
+    value === 'collapsed' ? value : undefined;
 }
