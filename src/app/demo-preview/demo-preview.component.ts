@@ -33,12 +33,21 @@ const MOCK_TABLE_ROWS = 5;
 /**
  * Standalone preview host for `DemoComponent`.
  *
- * Simulates the Shell when running `ng serve` alone: injects mock inputs,
+ * Simulates the Shell when running `ng serve` alone: injects mock Inputs,
  * exposes controls for `size`, `view`, `title`, `tableRows`, `profile` JSON,
  * and size/collapse/fullscreen toggles.
  *
- * Also simulates `shell:module-state` and `shell:visibility-changed` and
- * captures every outgoing `mfe:*` event.
+ * **Shell event simulation** — exposes two buttons that dispatch synthetic
+ * `shell:module-state` ({@link emitModuleState}) and `shell:visibility-changed`
+ * ({@link emitVisibilityChanged}) events scoped to the mock `instanceId`.
+ * These exercise the listener path inside `DemoComponent` (and its
+ * `DemoShellState`) without a real Shell, so developers can verify that the
+ * identity panel, layout, and event log react correctly.
+ *
+ * **Outgoing event capture** — on init, subscribes to every `mfe:*` event
+ * name exposed by `@cobranza-apps/mfe-events` and logs the payload to the
+ * browser console, so the developer can inspect every dispatch triggered by
+ * the action buttons, the view switcher, or the create-form handlers.
  *
  * NOT loaded by the Shell in production — the Shell hosts `DemoComponent`
  * directly via federation.

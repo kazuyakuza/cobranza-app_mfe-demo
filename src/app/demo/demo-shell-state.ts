@@ -17,6 +17,26 @@ interface ShellStateSnapshot {
   visibilityReason?: string;
 }
 
+/**
+ * Holds the latest state pushed by the Shell via `shell:module-state` and
+ * `shell:visibility-changed`, and exposes **display computeds** that the
+ * identity panel and layout bind to.
+ *
+ * Resolution order for each display computed (`displaySize`,
+ * `displayIsCollapsed`, `displayIsFullscreen`):
+ * 1. The value from the latest `shell:module-state` event (stored in the
+ *    internal `state` signal), when present.
+ * 2. Otherwise, the raw Angular Input (`size` / `isCollapsed` / `isFullscreen`)
+ *    injected by the Shell.
+ *
+ * This means the identity panel always reflects the most specific information
+ * available: explicit Shell events override the static Inputs, and the Inputs
+ * act as a sensible fallback on init.
+ *
+ * Also exposes `dimensionsText` (e.g. `"1200 × 400 px"`) and visibility
+ * computeds for the identity panel badges. Owned by `DemoComponent`, one
+ * instance per MFE instance.
+ */
 export class DemoShellState {
   private readonly state = signal<ShellStateSnapshot>({});
 

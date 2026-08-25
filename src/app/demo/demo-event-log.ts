@@ -29,6 +29,24 @@ export function summarizePayload(payload: unknown): string {
   }
 }
 
+/**
+ * Per-instance, in-memory log of `mfe:*` (outgoing) and `shell:*` (incoming)
+ * events for a single `DemoComponent`.
+ *
+ * Key properties:
+ * - **Instance isolation** — each `DemoComponent` constructs its own
+ *   `DemoEventLog`, so events from one MFE instance never leak into another
+ *   instance's log (critical when the Shell hosts several `demo` modules).
+ * - **Bounded size** — the log is capped at {@link MAX_LOG_ENTRIES} (25)
+ *   entries; new entries are prepended and the oldest are dropped, so the UI
+ *   remains compact even during long sessions.
+ * - **Signal-based** — `entries` is an Angular `signal`, so any template
+ *   binding re-renders automatically when a new event is recorded.
+ *
+ * Entries store both a human-readable {@link DemoLogEntry.payloadSummary}
+ * (truncated JSON, max 120 chars) and the {@link DemoLogEntry.rawPayload}
+ * for the data-viewer accordion.
+ */
 export class DemoEventLog {
   readonly entries = signal<DemoLogEntry[]>([]);
 

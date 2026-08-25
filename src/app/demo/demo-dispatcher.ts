@@ -32,6 +32,23 @@ const HEADER_DEMOS: ReadonlyArray<HeaderDemo> = [
   { title: 'Demo – Título C', status: 'warning' },
 ];
 
+/**
+ * Centralised dispatcher for every outgoing `mfe:*` event from a `DemoComponent`
+ * instance.
+ *
+ * Responsibilities:
+ * - Builds each event payload with the mandatory identity fields
+ *   (`schemaVersion`, `moduleType`, `instanceId`) via {@link withIdentity}.
+ * - Records every dispatched event in the instance-owned {@link DemoEventLog}
+ *   (direction `'out'`) so the local event-log UI can show it.
+ * - Logs the payload to the browser console for quick debugging.
+ * - Exposes {@link cycleHeaderDemo}, which rotates through a fixed list of
+ *   title/status combinations (`HEADER_DEMOS`) so the "Actualizar título"
+ *   action button can demo several header states without extra wiring.
+ *
+ * The dispatcher is stateless apart from the header-cycle index; it is owned
+ * by `DemoComponent` and created once per component instance.
+ */
 export class DemoDispatcher {
   private readonly headerDemoIndex = signal(0);
 

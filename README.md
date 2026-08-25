@@ -36,7 +36,7 @@ Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company B
 
 ## Status
 
-> **Phase 1 in progress.** The repository is a buildable Angular 22 Native Federation remote. `ng build` and `ng serve` work; the standalone preview host runs at `http://localhost:4201`. All three body views are implemented and switchable via `DemoConfig.view`: `'table'` (mock data table), `'create-form'` (simulated form with no real API), and `'profile'` (read-only profile card with mock defaults). The identity panel, per-instance visual marker, view-driven title behaviour, and core `mfe:*` events (`module-ready`, `update-header`, `show-notification`) are implemented. The full action-button set, local event log UI, data payload viewer, Shell event listeners, and standalone preview extensions are in progress.
+> **Phase 1 in progress.** The repository is a buildable Angular 22 Native Federation remote. `ng build` and `ng serve` work; the standalone preview host runs at `http://localhost:4201`. All three body views are implemented and switchable via `DemoConfig.view`: `'table'` (mock data table), `'create-form'` (simulated form with no real API), and `'profile'` (read-only profile card with mock defaults). The identity panel, per-instance visual marker, view-driven title behaviour, and core `mfe:*` events (`module-ready`, `update-header`, `show-notification`) are implemented. The full action-button set (8 buttons dispatching `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:request-add-module`, `mfe:module-error`), the per-instance local event log (last 25 in/out events), the collapsible data payload viewer, and the `shell:module-state` / `shell:visibility-changed` / `shell:theme-changed` listeners (filtered by `instanceId`) are implemented. The standalone preview host exposes controls for view switching, sample data, size/collapse/fullscreen toggles, and simulated shell events, and captures every outgoing `mfe:*` event in the console.
 
 ## Tech Stack
 
@@ -98,7 +98,7 @@ npm run serve
 npx ng serve
 ```
 
-The standalone preview host (`DemoPreviewComponent`) at route `/` injects mock Inputs into `DemoComponent` and exposes controls for `size`, `view`, and `title`. Open the browser console to verify the dispatched `mfe:module-ready` and `mfe:update-header` events.
+The standalone preview host (`DemoPreviewComponent`) at route `/` injects mock Inputs into `DemoComponent` and exposes controls for `size`, `view`, `title`, `tableRows`, and `profile` JSON, plus toggles for `isCollapsed` / `isFullscreen` and buttons that simulate `shell:module-state` and `shell:visibility-changed` events. Open the browser console to verify every dispatched `mfe:*` event (action buttons, view switcher, create-form handlers) and to see the captured outgoing events logged by the preview host.
 
 To run inside the Shell, start the Shell separately and add a Footer entry with `moduleType: 'demo'`, pointing its federation config at `http://localhost:4201/remoteEntry.json` (remote name `mfe-demo`, exposed module `./Component`). See the Shell repository for its run instructions.
 
@@ -177,6 +177,9 @@ src/
 │   │   ├── demo.component.html
 │   │   ├── demo.component.scss
 │   │   ├── demo-config.ts           # DemoViewMode + DemoConfig + coerceDemoConfig + view helpers
+│   │   ├── demo-dispatcher.ts       # outgoing mfe:* event dispatcher + header title cycling
+│   │   ├── demo-event-log.ts        # per-instance bounded event log (last 25 in/out events)
+│   │   ├── demo-shell-state.ts      # shell-driven signals + display computeds for identity panel
 │   │   ├── demo-utils.ts            # pure utility functions (hashString, truncateInstanceId)
 │   │   └── views/
 │   │       ├── demo-table/          # mock table sub-component (view === 'table')
