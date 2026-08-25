@@ -25,8 +25,10 @@ export interface DemoConfig {
   tableRows?: number;
 }
 
-const DEFAULT_VIEW: DemoViewMode = 'table';
-const DEFAULT_TABLE_ROWS = 5;
+export const DEFAULT_DEMO_CONFIG: Required<Pick<DemoConfig, 'view' | 'tableRows'>> = {
+  view: 'table',
+  tableRows: 5,
+};
 
 /**
  * Coerces the opaque Shell `data` input into a validated `DemoConfig`.
@@ -43,10 +45,10 @@ export function coerceDemoConfig(data: Record<string, unknown> | undefined): Dem
   const raw = (data ?? {}) as DemoConfig;
 
   return {
-    view: isValidViewMode(raw.view) ? raw.view : DEFAULT_VIEW,
+    view: isValidViewMode(raw.view) ? raw.view : DEFAULT_DEMO_CONFIG.view,
     title: typeof raw.title === 'string' ? raw.title : undefined,
     profile: isPlainObject(raw.profile) ? raw.profile : undefined,
-    tableRows: isValidTableRowCount(raw.tableRows) ? raw.tableRows : DEFAULT_TABLE_ROWS,
+    tableRows: isValidTableRowCount(raw.tableRows) ? raw.tableRows : DEFAULT_DEMO_CONFIG.tableRows,
   };
 }
 

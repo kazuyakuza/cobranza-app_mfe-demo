@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { type ModuleSize } from '@cobranza-apps/mfe-events';
+import { MFE_EVENTS, SCHEMA_VERSION, type ModuleSize } from '@cobranza-apps/mfe-events';
 
 import { coerceDemoConfig } from './demo-config';
 
@@ -46,4 +46,9 @@ export class DemoComponent {
   readonly config = computed(() => coerceDemoConfig(this.data()));
   /** Active view mode — shorthand for `config().view`. */
   readonly view = computed(() => this.config().view ?? 'table');
+
+  readonly sizeLabel = computed(() => (this.size() === '100%' ? 'long' : 'short'));
+
+  readonly schemaVersion = SCHEMA_VERSION;
+  readonly readyEventName = MFE_EVENTS.MODULE_READY;
 }
