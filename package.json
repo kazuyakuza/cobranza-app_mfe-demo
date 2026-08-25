@@ -18,7 +18,7 @@
     "@angular/platform-browser": "22.1.2",
     "@angular/router": "22.1.2",
     "@cobranza-apps/entities": "^0.5.1",
-    "@cobranza-apps/mfe-events": "^0.5.0",
+    "@cobranza-apps/mfe-events": "^0.6.0",
     "@cobranza-apps/ui": "^0.19.0",
     "@fortawesome/angular-fontawesome": "^5.1.0",
     "@fortawesome/fontawesome-svg-core": "^7.3.0",
