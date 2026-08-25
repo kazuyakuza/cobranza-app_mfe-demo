@@ -73,7 +73,7 @@ When `config.title` is present it is pushed via `mfe:update-header` on init; oth
 
 ## Min-height per view
 
-The demo declares a preferred `minHeightPx` per view via `mfe:update-min-height` (`MFE_EVENTS.UPDATE_MIN_HEIGHT` from `@cobranza-apps/mfe-events@^0.6.0`). The Shell should persist and apply it as CSS `min-height` on the module container.
+The demo declares a preferred `minHeightPx` per view via `mfe:update-min-height`. The Shell should persist it and apply it as CSS `min-height` on the module container.
 
 | `view` | Declared `minHeightPx` |
 | ------- | ---------------------- |
@@ -82,13 +82,7 @@ The demo declares a preferred `minHeightPx` per view via `mfe:update-min-height`
 | `profile` | 280 |
 | (default / unknown) | 320 |
 
-Dispatch moments:
-
-- `reason: 'init'` — once on mount.
-- `reason: 'view-change'` — when `config.view` changes via `data`.
-- `reason: 'content-change'` — when `tableRows` changes while `view === 'table'`.
-
-See [`mfe-demo-shell-usage.md`](mfe-demo-shell-usage.md) §Min-height contract for Shell-side responsibilities.
+Dispatch moments and payload shape: [`actions-and-events.md`](actions-and-events.md) §Min-height declaration. Shell-side responsibilities: [`mfe-demo-shell-usage.md`](mfe-demo-shell-usage.md) §Min-height contract.
 
 ## Related files
 

@@ -115,7 +115,7 @@ Note: always review and follow lib documentation.
 
 ### 3.5 Min-height declaration
 
-The demo declares a preferred `minHeightPx` per view via the `mfe:update-min-height` event (`MFE_EVENTS.UPDATE_MIN_HEIGHT` from `@cobranza-apps/mfe-events@^0.6.0`). It is dispatched on mount (`reason: 'init'`), on view change (`reason: 'view-change'`), and on material content change (`reason: 'content-change'`). The Shell should persist `minHeightPx` with the workspace instance and apply it as CSS `min-height` on the module container. It is a layout preference, not an exact height command; never echo it back as `shell:module-state.height`.
+The demo declares a preferred `minHeightPx` per view via `mfe:update-min-height` (`MFE_EVENTS.UPDATE_MIN_HEIGHT`). It fires on mount (`'init'`), view change (`'view-change'`), and content change (`'content-change'`). The Shell should persist `minHeightPx` and apply it as CSS `min-height` on the module container. It is a layout preference, not an exact height; never echo it back as `shell:module-state.height`.
 
 ### 3.6 Configurable view mode via `data` (DemoConfig)
 

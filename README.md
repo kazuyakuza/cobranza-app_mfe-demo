@@ -12,7 +12,6 @@ Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company B
 - [Tech Stack](#tech-stack)
 - [Federation Identity](#federation-identity)
 - [Development Modes](#development-modes)
-- [Dev Ports & CORS](#dev-ports--cors)
 - [Quick Start](#quick-start)
 - [Federation Configuration](#federation-configuration)
 - [Shell ↔ MFE Contract (summary)](#shell--mfe-contract-summary)
@@ -36,16 +35,7 @@ Demo / placeholder / reference **Micro-frontend (MFE)** remote for the Company B
 
 ## Status
 
-> **Phase 2 complete.**
->
-> - Buildable Angular 22 Native Federation remote; `ng build` and `ng serve` work.
-> - Standalone preview host runs at `http://localhost:4201` (`npm run serve`).
-> - Three body views (`table`, `create-form`, `profile`) switchable via `DemoConfig.view`.
-> - Identity panel, per-instance visual marker, action bar (8 buttons), per-instance event log (last 25), and collapsible data payload viewer.
-> - Min-height contract wired via `@cobranza-apps/mfe-events@^0.6.0`: the demo dispatches `mfe:update-min-height` on init / view-change / content-change with per-view `minHeightPx` (table 320, create-form 400, profile 280).
-> - `shell:module-state` listener captures `dragState` and `previewMode` when the Shell sends them.
-> - Multi-instance state isolation verified (event log, form state, declared min-height, colour marker).
-> - Standalone preview exercises min-height re-dispatch and debug override.
+> **Phase 2 complete.** Buildable Angular 22 Native Federation remote with three views, identity panel, 8 action buttons, per-instance event log, data payload viewer, min-height contract (`mfe:update-min-height`), `shell:module-state` `dragState`/`previewMode` capture, and verified multi-instance isolation.
 
 ## Tech Stack
 
@@ -70,25 +60,15 @@ Related packages: `@cobranza-apps/ui` (theme and components), `@cobranza-apps/mf
 
 ## Federation Identity
 
-| Concept | Value |
-| --------- | -------- |
-| Repo / app name | `mfe-demo` |
-| Federation remote name | `mfe-demo` |
-| Exposed module | `./Component` → `src/app/demo/demo.component.ts` (selector `cba-demo`) |
-| `moduleType` string in Shell | `demo` |
-| Config shape | Internal `DemoConfig` / `DemoViewMode` (lives only inside this repo) |
-| npm scope | Optional; not required for Phase 0 if loaded from URL |
+- Remote name: `mfe-demo`
+- Exposed module: `./Component` → `src/app/demo/demo.component.ts` (selector `cba-demo`)
+- `moduleType` in Shell: `demo`
+- Full reference (ports, remote entry, Footer snippets): [`docs/mfe-demo-shell-usage.md`](docs/mfe-demo-shell-usage.md).
 
 ## Development Modes
 
 1. **Standalone preview** — `ng serve` runs the app alone with a minimal local host page that simulates Shell Inputs and listens to `mfe:*` events. The preview host allows selecting / injecting different `DemoConfig` values (e.g. a small selector for `view`). Useful for UI work without the full Shell.
 2. **Loaded by Shell** (primary mode) — the Shell loads the remote via Native Federation and injects it into the workspace / fullscreen outlet. Different Footer entries (or `initialData`) drive the different views.
-
-## Dev Ports & CORS
-
-- **Standalone preview:** `http://localhost:4201` (configured in `angular.json` → `architect.serve-original.options.port`).
-- **Shell (local dev):** run the Shell on its own port (see the Shell repo) and point its federation config at this remote's manifest: `http://localhost:4201/remoteEntry.json`.
-- **Public path / CORS:** the Angular dev server serves the Native Federation manifest (`remoteEntry.json`) at the dev server root; cross-origin loading is handled via import maps and `es-module-shims`. No extra CORS configuration is needed for local `localhost` dev. Confirm the exact `remoteEntry` URL and remote name against the Shell's federation config.
 
 ## Quick Start
 
@@ -98,18 +78,13 @@ Prerequisites:
 - npm (no global installs).
 
 ```bash
-# Install dependencies
 npm install
-
-# Run the standalone preview (http://localhost:4201)
-npm run serve
-# or
-npx ng serve
+npm run serve   # http://localhost:4201
 ```
 
-The standalone preview host (`DemoPreviewComponent`) at route `/` injects mock Inputs into `DemoComponent` and exposes controls for `size`, `view`, `title`, `tableRows`, and `profile` JSON, plus toggles for `isCollapsed` / `isFullscreen` and buttons that simulate `shell:module-state` and `shell:visibility-changed` events. Open the browser console to verify every dispatched `mfe:*` event (action buttons, view switcher, create-form handlers) and to see the captured outgoing events logged by the preview host.
+The standalone preview (`DemoPreviewComponent`, route `/`) injects mock Inputs and simulates `shell:*` events. Use the browser console to see every `mfe:*` event captured by the preview host.
 
-To run inside the Shell, start the Shell separately and add a Footer entry with `moduleType: 'demo'`, pointing its federation config at `http://localhost:4201/remoteEntry.json` (remote name `mfe-demo`, exposed module `./Component`). See the Shell repository for its run instructions.
+To run inside the Shell, start the Shell separately and add a Footer entry with `moduleType: 'demo'` pointing at `http://localhost:4201/remoteEntry.json` (remote `mfe-demo`, exposed module `./Component`). No extra CORS config is needed for local `localhost` dev.
 
 **Theming:** `src/styles.scss` imports the shared theme via `@use '@cobranza-apps/ui/theme'`. This resolves because `angular.json` → `esbuild.options.stylePreprocessorOptions.includePaths` adds `node_modules` to the Sass include paths (required for the Angular esbuild builder, which does not include it by default).
 
@@ -141,11 +116,9 @@ Full tables and critical paths: [`.agent/project-info/architecture.md`](.agent/p
 
 ## View Modes (`DemoConfig`)
 
-The Shell transports opaque configuration through the `data` Input. `mfe-demo` interprets it internally as `DemoConfig`; the Shell only sees `Record<string, unknown>`.
+The Shell transports opaque `data` as `Record<string, unknown>`; `mfe-demo` interprets it internally as `DemoConfig`.
 
-Supported views: `'table'` (mock data table), `'create-form'` (simulated form), `'profile'` (read-only profile card).
-
-Full field reference, coercion rules, title behaviour, and example Shell Footer entries: [`docs/views-and-config.md`](docs/views-and-config.md).
+For supported views, field reference, coercion rules, and example Footer entries, see [`docs/views-and-config.md`](docs/views-and-config.md).
 
 ## Project Structure
 

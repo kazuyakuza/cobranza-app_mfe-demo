@@ -53,17 +53,15 @@ The `'create-form'` view emits `primaryAction` / `secondaryAction` outputs consu
 
 Not triggered by an action button. Dispatched automatically by `DemoComponent`:
 
-| Moment | `reason` | Notes |
-| ------- | -------- | ----- |
-| `ngOnInit` | `'init'` | First declaration after mount. |
-| `config.view` change | `'view-change'` | When `data` switches the view. |
-| `tableRows` change (table view) | `'content-change'` | When the mock row count changes. |
+| Moment | `reason` |
+| ------- | -------- |
+| `ngOnInit` | `'init'` |
+| `config.view` change | `'view-change'` |
+| `tableRows` change (table view) | `'content-change'` |
 
-Payload (identity-bearing): `{ schemaVersion, moduleType, instanceId, minHeightPx, reason }`.
+Payload (identity-bearing): `{ schemaVersion, moduleType, instanceId, minHeightPx, reason }`. Per-view `minHeightPx` values are listed in [`views-and-config.md`](views-and-config.md) §Min-height per view.
 
-Per-view `minHeightPx`: `table` 320, `create-form` 400, `profile` 280. Computed by `computeMinHeightPx(view)` in `demo-min-height.ts`.
-
-See [`mfe-demo-shell-usage.md`](mfe-demo-shell-usage.md) §Min-height contract.
+See [`mfe-demo-shell-usage.md`](mfe-demo-shell-usage.md) §Min-height contract for Shell-side responsibilities.
 
 ## Related files
 

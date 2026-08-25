@@ -4,14 +4,7 @@
 
 ## Federation Identity
 
-| Concept | Value |
-| --------- | -------- |
-| Remote name | `mfe-demo` |
-| Exposed module | `./Component` → `src/app/demo/demo.component.ts` |
-| Component selector | `cba-demo` |
-| `moduleType` (Shell side) | `demo` |
-| Dev port | `4201` |
-| Remote entry (local dev) | `http://localhost:4201/remoteEntry.json` |
+See [`docs/mfe-demo-shell-usage.md`](../docs/mfe-demo-shell-usage.md) §Federation identity for the canonical table.
 
 ## Folder Layout (Phase 0)
 

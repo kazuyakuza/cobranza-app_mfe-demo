@@ -16,13 +16,13 @@
 
 ### Event log
 
-`DemoEventLog` keeps the last 25 events for the current instance only (no shared singleton). It records both outgoing `mfe:*` and incoming `shell:*` events that passed the `instanceId` + `moduleType` filter. Rendered as a list inside a `cba-card` with direction (`→ OUT` / `← IN`), timestamp, event type, and a truncated JSON payload summary. A "Limpiar log" button clears the log. **Purpose: debugging Shell integration** — verify that the Shell receives dispatched events and that the MFE reacts to the right `shell:*` events for the right instance.
+`DemoEventLog` keeps the last 25 incoming `shell:*` and outgoing `mfe:*` events for the current instance only. It shows direction, timestamp, event type, and a truncated payload summary. Use it to verify that the Shell receives dispatched events and that the MFE reacts to the right `shell:*` events for the right instance.
 
 ### Data payload viewer
 
-A collapsible `cba-accordion` labelled "Payload (data)" shows a pretty-printed JSON of the raw `data` Input, updated live when `data` changes. **Purpose: debugging what configuration the Shell actually forwarded** to this instance (Footer `config`, persisted `data`, or `initialData`).
+A collapsible `cba-accordion` shows the raw `data` Input as pretty-printed JSON. Use it to inspect the configuration the Shell forwarded (Footer `config`, persisted `data`, or `initialData`).
 
-**The event log and data payload viewer are debugging surfaces for Shell integration; they are not production UI.**
+**Both surfaces are debugging aids, not production UI.**
 
 ## What the Shell can test with mfe-demo
 

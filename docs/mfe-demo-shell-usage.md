@@ -61,31 +61,25 @@ Three ready-to-copy blocks (one per view). Each is a `WorkspaceModuleDefinition`
 
 ## How `data` / `initialData` map to `DemoConfig`
 
-- Shell copies `WorkspaceModuleDefinition.config` into the instance `data` Input on creation.
+- Shell Footer `config` → `data` Input on creation.
 - Persisted workspace state restores `data` on reload.
-- `mfe:request-add-module` may carry `initialData` to pre-configure a new instance (demo uses `{ view: 'table' }`).
-- Field reference (copy of the `DemoConfig` interface from `demo-config.ts`): `view?`, `title?`, `profile?`, `tableRows?`.
-- Coercion: invalid `view` → `'table'`; non-string `title` → dropped; non-plain-object `profile` → dropped; non-finite/negative `tableRows` → `5`.
-- Link to [`views-and-config.md`](views-and-config.md) for the full field reference.
+- `mfe:request-add-module` may carry `initialData` (demo uses `{ view: 'table' }`).
+
+`DemoConfig` fields (`view?`, `title?`, `profile?`, `tableRows?`) and coercion rules live in [`views-and-config.md`](views-and-config.md).
 
 ## Action buttons → events
 
-The demo exposes 8 action buttons that dispatch `mfe:*` events. See [`actions-and-events.md`](actions-and-events.md) for the button → event table — the full table is not duplicated here. Event names used across the demo: `mfe:update-header`, `mfe:show-notification`, `mfe:request-fullscreen`, `mfe:request-remove`, `mfe:request-add-module`, `mfe:module-error`, `mfe:update-min-height`.
+The demo exposes 8 action buttons that dispatch `mfe:*` events. See [`actions-and-events.md`](actions-and-events.md) for the full button → event table.
 
 ## Min-height contract
 
-- The demo dispatches `mfe:update-min-height` (`MFE_EVENTS.UPDATE_MIN_HEIGHT` from `@cobranza-apps/mfe-events@^0.6.0`).
-- Dispatch moments:
-  - `reason: 'init'` — once on `ngOnInit`.
-  - `reason: 'view-change'` — when `config.view` changes via `data`.
-  - `reason: 'content-change'` — when `tableRows` changes while `view === 'table'`.
-- Per-view declared values (from `demo-min-height.ts`): `table` 320 px, `create-form` 400 px, `profile` 280 px.
-- Payload shape (identity-bearing): `{ schemaVersion, moduleType, instanceId, minHeightPx, reason }`.
-- **Shell responsibilities:**
-  1. Persist `minHeightPx` with the workspace instance so it survives reload.
-  2. Apply it as CSS `min-height` on the module container (the demo never sets its own outer height).
-  3. Treat it as a *preference*, not an exact height. Never echo it back as `shell:module-state.height` (that field is the current container height, a different concept).
-- The demo does NOT implement the Shell-side listener; it only emits.
+The demo dispatches `mfe:update-min-height` (`MFE_EVENTS.UPDATE_MIN_HEIGHT` from `@cobranza-apps/mfe-events@^0.6.0`) with reasons `'init'`, `'view-change'`, and `'content-change'`. Per-view values and payload shape are documented in [`views-and-config.md`](views-and-config.md) and [`actions-and-events.md`](actions-and-events.md).
+
+**Shell responsibilities:**
+
+1. Persist `minHeightPx` with the workspace instance.
+2. Apply it as CSS `min-height` on the module container.
+3. Treat it as a *preference*, not an exact height. Never echo it back as `shell:module-state.height`.
 
 ## `shell:module-state` fields consumed
 
@@ -103,17 +97,14 @@ Note: `height` is the current container height reported by the Shell — NOT the
 
 ## Suggested manual test scenarios
 
-1. **Multiple instances** — add several `demo` Footer entries via the Shell Footer `+`; confirm each gets a distinct `instanceId`, a distinct colour marker, and isolated event logs.
-2. **Resize 50 % / 100 %** — toggle `size` (or send `shell:module-state`); views reflow without horizontal overflow; identity panel updates.
-3. **Collapse & fullscreen** — toggle `isCollapsed` / `isFullscreen` (or `shell:module-state`); identity panel badges update; no layout breakage.
-4. **View change via Footer** — add instances with different `config.view`; confirm `mfe:update-min-height` re-dispatches with `reason: 'view-change'` and a different `minHeightPx` (320 / 400 / 280).
-5. **Drag-and-drop** — if the Shell supports DnD, trigger a drag; confirm `dragState` appears in the demo identity panel / event log.
-6. **Persistence restore** — save workspace with demo instances in different views, reload; confirm `data` restores the view and `mfe:update-min-height` fires with `reason: 'init'`.
-7. **Notification flow** — click the three notification buttons; confirm Shell toasts render.
-8. **Remove flow** — click "Quitar módulo"; confirm Shell removes the instance.
-9. **Request-add-module flow** — click "Agregar instancia"; confirm Shell creates a new `demo` instance with `initialData: { view: 'table' }`.
-10. **Update-min-height flow** — open the standalone preview (`npm run serve`), use "Reenviar min-height" with a debug override; confirm `mfe:update-min-height` fires with the override value and the identity panel updates.
-11. **Error flow** — click "Simular error"; confirm Shell error-handling UI.
+1. **Multiple instances** — add several `demo` Footer entries; confirm distinct `instanceId`, colour marker, and isolated event logs.
+2. **Resize 50 % / 100 %** — toggle `size`; views reflow and identity panel updates.
+3. **Collapse & fullscreen** — toggle `isCollapsed` / `isFullscreen`; identity panel badges update.
+4. **View change** — switch `config.view`; confirm `mfe:update-min-height` fires with `reason: 'view-change'` and the matching `minHeightPx`.
+5. **Drag & drop / preview** — trigger drag or send `shell:module-state` with `dragState` / `previewMode`; confirm identity panel / event log reflects them.
+6. **Persistence restore** — save, reload, confirm `data` restores the view and `mfe:update-min-height` fires with `reason: 'init'`.
+7. **Notification, remove, add-module, error flows** — click the notification buttons, "Quitar módulo", "Agregar instancia", and "Simular error"; confirm Shell reacts.
+8. **Min-height override** — in standalone preview, use "Reenviar min-height" with a debug override; confirm `mfe:update-min-height` fires and identity panel updates.
 
 ## Related files
 
