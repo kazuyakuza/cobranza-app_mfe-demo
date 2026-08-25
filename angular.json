@@ -1,119 +1,119 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
-  "newProjectRoot": "projects",
-  "projects": {
-    "mfe-demo": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
-      "root": "",
-      "sourceRoot": "src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-architects/native-federation:build",
-          "options": {
-            "cacheExternalArtifacts": true,
-            "tsConfig": "tsconfig.federation.json"
-          },
-          "configurations": {
-            "production": {
-              "target": "mfe-demo:esbuild:production"
-            },
-            "development": {
-              "target": "mfe-demo:esbuild:development",
-              "dev": true
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve": {
-          "_comment": "Native Federation schematic swapped builders: 'serve' now orchestrates federation build, 'serve-original' runs the actual dev server on port 4201.",
-          "builder": "@angular-architects/native-federation:build",
-          "options": {
-            "target": "mfe-demo:serve-original:development",
-            "tsConfig": "tsconfig.federation.json",
-            "rebuildDelay": 500,
-            "cacheExternalArtifacts": true,
-            "dev": true,
-            "devServer": true,
-            "port": 0
-          }
-        },
-        "esbuild": {
-          "builder": "@angular/build:application",
-          "options": {
-            "outputPath": "dist/mfe-demo",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js",
-              "es-module-shims"
-            ],
-            "tsConfig": "tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "node_modules"
-              ]
-            },
-            "scripts": [
-              "node_modules/reflect-metadata/Reflect.js"
-            ]
-          },
-          "configurations": {
-            "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve-original": {
-          "_comment": "Actual dev server on port 4201; invoked by 'serve' target after federation setup.",
-          "builder": "@angular/build:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "mfe-demo:esbuild:production"
-            },
-            "development": {
-              "buildTarget": "mfe-demo:esbuild:development"
-            }
-          },
-          "defaultConfiguration": "development",
-          "options": {
-            "port": 4201
-          }
-        }
-      }
-    }
-  }
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"newProjectRoot": "projects",
+	"projects": {
+		"mfe-demo": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss"
+				}
+			},
+			"root": "",
+			"sourceRoot": "src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular-architects/native-federation:build",
+					"options": {
+						"cacheExternalArtifacts": true,
+						"tsConfig": "tsconfig.federation.json"
+					},
+					"configurations": {
+						"production": {
+							"target": "mfe-demo:esbuild:production"
+						},
+						"development": {
+							"target": "mfe-demo:esbuild:development",
+							"dev": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"_comment": "Native Federation schematic swapped builders: 'serve' now orchestrates federation build, 'serve-original' runs the actual dev server on port 4201.",
+					"builder": "@angular-architects/native-federation:build",
+					"options": {
+						"target": "mfe-demo:serve-original:development",
+						"tsConfig": "tsconfig.federation.json",
+						"rebuildDelay": 500,
+						"cacheExternalArtifacts": true,
+						"dev": true,
+						"devServer": true,
+						"port": 0
+					}
+				},
+				"esbuild": {
+					"builder": "@angular/build:application",
+					"options": {
+						"outputPath": "dist/mfe-demo",
+						"index": "src/index.html",
+						"browser": "src/main.ts",
+						"polyfills": [
+							"zone.js",
+							"es-module-shims"
+						],
+						"tsConfig": "tsconfig.app.json",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "public"
+							}
+						],
+						"styles": [
+							"src/styles.scss"
+						],
+						"stylePreprocessorOptions": {
+							"includePaths": [
+								"node_modules"
+							]
+						},
+						"scripts": [
+							"node_modules/reflect-metadata/Reflect.js"
+						]
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "1mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "4kb"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve-original": {
+					"_comment": "Actual dev server on port 4201; invoked by 'serve' target after federation setup.",
+					"builder": "@angular/build:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "mfe-demo:esbuild:production"
+						},
+						"development": {
+							"buildTarget": "mfe-demo:esbuild:development"
+						}
+					},
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4201
+					}
+				}
+			}
+		}
+	}
 }
