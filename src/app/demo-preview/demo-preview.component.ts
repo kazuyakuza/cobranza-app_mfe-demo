@@ -50,11 +50,13 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
     tableRows: MOCK_TABLE_ROWS,
   }));
 
+  /** Captures `mfe:module-ready` events emitted by the embedded `DemoComponent`. */
   private readonly onModuleReady = (event: Event): void => {
     if (!isMfeEvent(event, MFE_EVENTS.MODULE_READY)) return;
     console.log('[demo-preview] captured', MFE_EVENTS.MODULE_READY, event.detail);
   };
 
+  /** Captures `mfe:update-header` events emitted by the embedded `DemoComponent`. */
   private readonly onUpdateHeader = (event: Event): void => {
     if (!isMfeEvent(event, MFE_EVENTS.UPDATE_HEADER)) return;
     console.log('[demo-preview] captured', MFE_EVENTS.UPDATE_HEADER, event.detail);

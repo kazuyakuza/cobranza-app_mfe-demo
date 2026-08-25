@@ -79,18 +79,21 @@ export class DemoComponent implements OnInit, OnDestroy {
   readonly readyEventName = MFE_EVENTS.MODULE_READY;
   readonly headerEventName = MFE_EVENTS.UPDATE_HEADER;
 
+  /** Handles `shell:module-state`; ignores events targeting other instances. */
   private readonly onModuleState = (event: Event): void => {
     if (!isShellEvent(event, SHELL_EVENTS.MODULE_STATE)) return;
     if (event.detail.instanceId !== this.instanceId()) return;
     console.log('[mfe-demo] received', SHELL_EVENTS.MODULE_STATE, event.detail);
   };
 
+  /** Handles `shell:visibility-changed`; ignores events targeting other instances. */
   private readonly onVisibilityChanged = (event: Event): void => {
     if (!isShellEvent(event, SHELL_EVENTS.VISIBILITY_CHANGED)) return;
     if (event.detail.instanceId !== this.instanceId()) return;
     console.log('[mfe-demo] received', SHELL_EVENTS.VISIBILITY_CHANGED, event.detail);
   };
 
+  /** Handles `shell:theme-changed`; global — no `instanceId` filter. */
   private readonly onThemeChanged = (event: Event): void => {
     if (!isShellEvent(event, SHELL_EVENTS.THEME_CHANGED)) return;
     console.log('[mfe-demo] received', SHELL_EVENTS.THEME_CHANGED, event.detail);
@@ -108,6 +111,7 @@ export class DemoComponent implements OnInit, OnDestroy {
     window.removeEventListener(SHELL_EVENTS.THEME_CHANGED, this.onThemeChanged);
   }
 
+  /** Dispatches `mfe:module-ready` with schema version, module type, and instance ID. */
   private dispatchReadyEvent(): void {
     const payload: ModuleReadyPayload = {
       schemaVersion: SCHEMA_VERSION,
@@ -118,6 +122,7 @@ export class DemoComponent implements OnInit, OnDestroy {
     dispatchMfeEvent(MFE_EVENTS.MODULE_READY, payload);
   }
 
+  /** Dispatches `mfe:update-header` with the resolved title and a `loaded` status. */
   private dispatchUpdateHeaderEvent(): void {
     const payload: UpdateHeaderPayload = {
       schemaVersion: SCHEMA_VERSION,
@@ -130,6 +135,7 @@ export class DemoComponent implements OnInit, OnDestroy {
     dispatchMfeEvent(MFE_EVENTS.UPDATE_HEADER, payload);
   }
 
+  /** Registers `window` listeners for the three shell events; cleaned up in `ngOnDestroy`. */
   private attachShellListeners(): void {
     window.addEventListener(SHELL_EVENTS.MODULE_STATE, this.onModuleState);
     window.addEventListener(SHELL_EVENTS.VISIBILITY_CHANGED, this.onVisibilityChanged);
