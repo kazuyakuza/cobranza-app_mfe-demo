@@ -7,6 +7,9 @@ export interface DemoShellStateOptions {
   readonly inputIsFullscreen: Signal<boolean>;
 }
 
+type DragState = 'drag-start' | 'drag-end' | 'dropped';
+type PreviewMode = 'collapsed';
+
 interface ShellStateSnapshot {
   size?: ModuleSize;
   isCollapsed?: boolean;
@@ -15,6 +18,8 @@ interface ShellStateSnapshot {
   heightPx?: number;
   visibilityVisible?: boolean;
   visibilityReason?: string;
+  dragState?: DragState;
+  previewMode?: PreviewMode;
 }
 
 /**
@@ -61,6 +66,8 @@ export class DemoShellState {
 
   readonly visibilityVisible = computed(() => this.state().visibilityVisible);
   readonly visibilityReason = computed(() => this.state().visibilityReason);
+  readonly displayDragState = computed(() => this.state().dragState);
+  readonly displayPreviewMode = computed(() => this.state().previewMode);
 
   applyModuleState(state: {
     size: ModuleSize;
@@ -68,6 +75,8 @@ export class DemoShellState {
     height: number;
     isCollapsed: boolean;
     isFullscreen: boolean;
+    dragState?: DragState;
+    previewMode?: PreviewMode;
   }): void {
     this.state.update((current) => ({
       ...current,
@@ -76,6 +85,8 @@ export class DemoShellState {
       heightPx: state.height,
       isCollapsed: state.isCollapsed,
       isFullscreen: state.isFullscreen,
+      dragState: state.dragState,
+      previewMode: state.previewMode,
     }));
   }
 

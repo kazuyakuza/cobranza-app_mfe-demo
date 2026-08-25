@@ -37,6 +37,22 @@
       </div>
     }
 
+    @if (shellState.displayDragState()) {
+      <div class="cba-demo__identity-row">
+        <span class="cba-text-caption">
+          <strong>Arrastre:</strong> {{ shellState.displayDragState() }}
+        </span>
+      </div>
+    }
+
+    @if (shellState.displayPreviewMode()) {
+      <div class="cba-demo__identity-row">
+        <span class="cba-text-caption">
+          <strong>Modo preview:</strong> {{ shellState.displayPreviewMode() }}
+        </span>
+      </div>
+    }
+
     @if (shellState.visibilityVisible() !== undefined) {
       <div class="cba-demo__identity-row">
         <span class="cba-text-caption">
