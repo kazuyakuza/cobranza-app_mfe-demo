@@ -64,7 +64,9 @@
 						"styles": [
 							"src/styles.scss"
 						],
-						"scripts": []
+						"scripts": [
+							"node_modules/reflect-metadata/Reflect.js"
+						]
 					},
 					"configurations": {
 						"production": {

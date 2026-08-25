@@ -1,0 +1,23 @@
+<section class="cba-demo" [attr.data-size]="size()">
+  <header class="cba-demo__summary">
+    <p class="cba-text-caption">Módulo: {{ moduleType() }} · Instancia: {{ instanceId() }}</p>
+    <p class="cba-text-caption">
+      Tamaño: {{ size() }} ({{ sizeLabel() }}) · Colapsado: {{ isCollapsed() }} ·
+      Pantalla completa: {{ isFullscreen() }}
+    </p>
+    <p class="cba-text-caption">Vista actual: {{ view() }}</p>
+    <p class="cba-text-caption">Esquema: {{ schemaVersion }} · Evento ready: {{ readyEventName }}</p>
+  </header>
+
+  @switch (view()) {
+    @case ('table') {
+      <p class="cba-text-body">Vista tabla — filas simuladas: {{ config().tableRows }}.</p>
+    }
+    @case ('create-form') {
+      <p class="cba-text-body">Vista alta — pendiente en Phase 0.</p>
+    }
+    @case ('profile') {
+      <p class="cba-text-body">Vista perfil — pendiente en Phase 0.</p>
+    }
+  }
+</section>

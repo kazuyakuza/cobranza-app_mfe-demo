@@ -6,7 +6,7 @@ const { withNativeFederation, shareAll } = require('@angular-architects/native-f
 module.exports = withNativeFederation({
   name: 'mfe-demo', // Remote name for host apps to reference this MFE
   exposes: {
-    './Component': './src/app/app.component.ts', // Exposed root component; publicPath handled by dev server
+    './Component': './src/app/demo/demo.component.ts', // Exposed root component; publicPath handled by dev server
   },
   skip: [
     'rxjs/ajax',
