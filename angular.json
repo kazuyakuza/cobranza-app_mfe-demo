@@ -64,6 +64,11 @@
 						"styles": [
 							"src/styles.scss"
 						],
+						"stylePreprocessorOptions": {
+							"includePaths": [
+								"node_modules"
+							]
+						},
 						"scripts": [
 							"node_modules/reflect-metadata/Reflect.js"
 						]
