@@ -47,16 +47,15 @@
       <app-demo-table [rowCount]="config().tableRows ?? 5" [size]="size()" />
     }
     @case ('create-form') {
-      <div class="cba-demo__placeholder">
-        <p class="cba-text-body">Vista aún no implementada en Phase 0.</p>
-        <p class="cba-text-caption">Vista seleccionada: {{ viewLabel() }}</p>
-      </div>
+      <app-demo-create-form
+        [size]="size()"
+        (primaryAction)="onCreateFormPrimary()"
+        (secondaryAction)="onCreateFormSecondary()" />
     }
     @case ('profile') {
-      <div class="cba-demo__placeholder">
-        <p class="cba-text-body">Vista aún no implementada en Phase 0.</p>
-        <p class="cba-text-caption">Vista seleccionada: {{ viewLabel() }}</p>
-      </div>
+      <app-demo-profile
+        [profile]="config().profile"
+        [size]="size()" />
     }
   }
 </section>

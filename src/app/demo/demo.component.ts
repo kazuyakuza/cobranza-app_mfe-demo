@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   input,
   OnDestroy,
   OnInit,
@@ -16,20 +17,22 @@ import {
   type ModuleReadyPayload,
   type ModuleSize,
   type ModuleStatePayload,
+  type ModuleStatus,
+  type ShowNotificationPayload,
   type ThemeChangedPayload,
   type UpdateHeaderPayload,
   type VisibilityChangedPayload,
 } from '@cobranza-apps/mfe-events';
 
-import { coerceDemoConfig } from './demo-config';
+import { coerceDemoConfig, defaultTitleForView, viewModeToSpanishLabel } from './demo-config';
+import { DemoCreateFormComponent } from './views/demo-create-form/demo-create-form.component';
+import { DemoProfileComponent } from './views/demo-profile/demo-profile.component';
 import { DemoTableComponent } from './views/demo-table/demo-table.component';
-
-const DEFAULT_HEADER_TITLE = 'Demo';
 
 @Component({
   selector: 'cba-demo',
   standalone: true,
-  imports: [CbaBadgeComponent, DemoTableComponent],
+  imports: [CbaBadgeComponent, DemoTableComponent, DemoCreateFormComponent, DemoProfileComponent],
   templateUrl: './demo.component.html',
   styleUrl: './demo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -75,9 +78,25 @@ export class DemoComponent implements OnInit, OnDestroy {
 
   readonly viewLabel = computed(() => viewModeToSpanishLabel(this.view()));
 
+  readonly resolvedTitle = computed(() =>
+    this.config().title ?? defaultTitleForView(this.view()),
+  );
+
   readonly schemaVersion = SCHEMA_VERSION;
   readonly readyEventName = MFE_EVENTS.MODULE_READY;
   readonly headerEventName = MFE_EVENTS.UPDATE_HEADER;
+
+  private previousResolvedTitle = '';
+
+  constructor() {
+    effect(() => {
+      const resolvedTitle = this.resolvedTitle();
+      if (resolvedTitle !== this.previousResolvedTitle) {
+        this.dispatchUpdateHeader(resolvedTitle, 'loaded');
+        this.previousResolvedTitle = resolvedTitle;
+      }
+    });
+  }
 
   /** Handles `shell:module-state`; ignores events targeting other instances. */
   private readonly onModuleState = (event: Event): void => {
@@ -101,7 +120,6 @@ export class DemoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.dispatchReadyEvent();
-    this.dispatchUpdateHeaderEvent();
     this.attachShellListeners();
   }
 
@@ -122,18 +140,41 @@ export class DemoComponent implements OnInit, OnDestroy {
     dispatchMfeEvent(MFE_EVENTS.MODULE_READY, payload);
   }
 
-  /** Dispatches `mfe:update-header` with the resolved title and a `loaded` status. */
-  private dispatchUpdateHeaderEvent(): void {
+  /** Dispatches `mfe:update-header` with the resolved title and a status. */
+  private dispatchUpdateHeader(title: string, status: ModuleStatus): void {
     const payload: UpdateHeaderPayload = {
       schemaVersion: SCHEMA_VERSION,
       moduleType: this.moduleType(),
       instanceId: this.instanceId(),
-      title: this.config().title ?? DEFAULT_HEADER_TITLE,
-      status: 'loaded',
+      title,
+      status,
     };
     console.log('[mfe-demo] dispatch', MFE_EVENTS.UPDATE_HEADER, payload);
     dispatchMfeEvent(MFE_EVENTS.UPDATE_HEADER, payload);
   }
+
+  /** Dispatches a global `mfe:show-notification` toast. */
+  private dispatchShowNotification(
+    type: 'success' | 'warning' | 'error' | 'info',
+    message: string,
+  ): void {
+    const payload: ShowNotificationPayload = {
+      schemaVersion: SCHEMA_VERSION,
+      type,
+      message,
+    };
+    console.log('[mfe-demo] dispatch', MFE_EVENTS.SHOW_NOTIFICATION, payload);
+    dispatchMfeEvent(MFE_EVENTS.SHOW_NOTIFICATION, payload);
+  }
+
+  readonly onCreateFormPrimary = (): void => {
+    this.dispatchShowNotification('success', 'Formulario de prueba enviado (sin API real)');
+    this.dispatchUpdateHeader(this.resolvedTitle(), 'success');
+  };
+
+  readonly onCreateFormSecondary = (): void => {
+    this.dispatchShowNotification('info', 'Formulario reiniciado');
+  };
 
   /** Registers `window` listeners for the three shell events; cleaned up in `ngOnDestroy`. */
   private attachShellListeners(): void {
@@ -159,14 +200,4 @@ function truncateInstanceId(value: string): string {
   return value.length > SHORT_ID_PREFIX_LENGTH
     ? `${value.slice(0, SHORT_ID_PREFIX_LENGTH)}…`
     : value;
-}
-
-const VIEW_LABELS: Readonly<Record<string, string>> = {
-  table: 'Tabla',
-  'create-form': 'Alta',
-  profile: 'Perfil',
-};
-
-function viewModeToSpanishLabel(view: string): string {
-  return VIEW_LABELS[view] ?? 'Desconocida';
 }
