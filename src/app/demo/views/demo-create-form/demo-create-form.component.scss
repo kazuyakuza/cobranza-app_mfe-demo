@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+.demo-create-form {
+  display: block;
+}
+
+.demo-create-form__hint {
+  margin-bottom: var(--cba-space-3);
+  color: var(--cba-text-muted);
+}
+
+.demo-create-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cba-space-3);
+  margin-bottom: var(--cba-space-3);
+}
+
+.demo-create-form__field--wide {
+  grid-column: 1 / -1;
+}
+
+.demo-create-form[data-size='50%'] .demo-create-form__grid {
+  grid-template-columns: 1fr;
+}
+
+.demo-create-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cba-space-2);
+}

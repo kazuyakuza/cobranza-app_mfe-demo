@@ -1,0 +1,49 @@
+<div class="demo-create-form" [attr.data-size]="size()">
+  <p class="cba-text-caption demo-create-form__hint">
+    Formulario de prueba — no realiza envíos reales.
+  </p>
+
+  <div class="demo-create-form__grid">
+    <cba-input
+      label="Nombre"
+      placeholder="Ej: Juan Pérez"
+      [ngModel]="nombre()"
+      (ngModelChange)="nombre.set($event)" />
+
+    <cba-input
+      label="Documento / DNI"
+      placeholder="Ej: 30.111.222"
+      [ngModel]="documento()"
+      (ngModelChange)="documento.set($event)" />
+
+    <cba-input
+      label="Email"
+      type="email"
+      placeholder="Ej: juan.perez@example.com"
+      [ngModel]="email()"
+      (ngModelChange)="email.set($event)" />
+
+    <cba-input
+      label="Teléfono"
+      type="tel"
+      placeholder="Ej: +54 9 11 1234-5678"
+      [ngModel]="telefono()"
+      (ngModelChange)="telefono.set($event)" />
+
+    <cba-input
+      class="demo-create-form__field--wide"
+      label="Observaciones"
+      placeholder="Notas de prueba"
+      [ngModel]="observaciones()"
+      (ngModelChange)="observaciones.set($event)" />
+  </div>
+
+  <div class="demo-create-form__actions">
+    <cba-button variant="primary" (cbaClick)="onPrimary()">
+      Guardar (simulado)
+    </cba-button>
+    <cba-button variant="secondary" (cbaClick)="onSecondary()">
+      Reiniciar
+    </cba-button>
+  </div>
+</div>
