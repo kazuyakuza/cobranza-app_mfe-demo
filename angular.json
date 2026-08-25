@@ -32,6 +32,7 @@
 					"defaultConfiguration": "production"
 				},
 				"serve": {
+					"_comment": "Native Federation schematic swapped builders: 'serve' now orchestrates federation build, 'serve-original' runs the actual dev server on port 4201.",
 					"builder": "@angular-architects/native-federation:build",
 					"options": {
 						"target": "mfe-demo:serve-original:development",
@@ -90,6 +91,7 @@
 					"defaultConfiguration": "production"
 				},
 				"serve-original": {
+					"_comment": "Actual dev server on port 4201; invoked by 'serve' target after federation setup.",
 					"builder": "@angular/build:dev-server",
 					"configurations": {
 						"production": {
