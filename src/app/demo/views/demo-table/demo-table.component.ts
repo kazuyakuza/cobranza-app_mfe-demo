@@ -52,16 +52,18 @@ export class DemoTableComponent {
 
   /** Maps a Spanish estado string to a `CbaBadge` variant. */
   badgeVariantFor(estado: DemoTableRow['estado']): 'success' | 'warning' | 'danger' {
-    return mapEstadoToVariant(estado);
+    if (estado === 'Pagado') {
+      return 'success';
+    }
+    if (estado === 'Pendiente') {
+      return 'warning';
+    }
+    return 'danger';
   }
 
   private buildMockRows(count: number): DemoTableRow[] {
     const safeCount = Math.max(0, Math.floor(count));
-    const result: DemoTableRow[] = [];
-    for (let index = 0; index < safeCount; index += 1) {
-      result.push(buildRow(index));
-    }
-    return result;
+    return Array.from({ length: safeCount }, (_, index) => buildRow(index));
   }
 }
 
@@ -73,14 +75,4 @@ function buildRow(index: number): DemoTableRow {
     fecha: FIXED_FECHA,
     estado: ESTADOS[index % ESTADOS.length],
   };
-}
-
-function mapEstadoToVariant(estado: DemoTableRow['estado']): 'success' | 'warning' | 'danger' {
-  if (estado === 'Pagado') {
-    return 'success';
-  }
-  if (estado === 'Pendiente') {
-    return 'warning';
-  }
-  return 'danger';
 }

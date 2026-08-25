@@ -59,7 +59,6 @@ export class DemoComponent {
 
   readonly schemaVersion = SCHEMA_VERSION;
   readonly readyEventName = MFE_EVENTS.MODULE_READY;
-  readonly sizeLabel = computed(() => (this.size() === '100%' ? 'long' : 'short'));
 
   /** Stable 32-bit integer hash of an arbitrary string (used for the instance marker hue). */
   private hashString(value: string): number {
@@ -81,15 +80,12 @@ function truncateInstanceId(value: string): string {
     : value;
 }
 
+const VIEW_LABELS: Readonly<Record<string, string>> = {
+  table: 'Tabla',
+  'create-form': 'Alta',
+  profile: 'Perfil',
+};
+
 function viewModeToSpanishLabel(view: string): string {
-  if (view === 'table') {
-    return 'Tabla';
-  }
-  if (view === 'create-form') {
-    return 'Alta';
-  }
-  if (view === 'profile') {
-    return 'Perfil';
-  }
-  return 'Desconocida';
+  return VIEW_LABELS[view] ?? 'Desconocida';
 }
