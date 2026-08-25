@@ -6,11 +6,11 @@
 
 - **Date:** 2026-08-24
 - **Branch:** `feat/mfe-demo-phase0`
-- **Repository stage:** Phase 0 implementation in progress.
+- **Repository stage:** Phase 0 implementation complete; README and agent notes updated.
   - Angular 22.1.2 standalone app scaffolded.
   - Native Federation configured (`federation.config.js`, `angular.json`).
-  - `DemoComponent` stub implemented with signal Inputs and `DemoConfig` coercion.
-  - `DemoPreviewComponent` stub implemented as the standalone preview host.
+  - `DemoComponent` fully implemented with signal Inputs, `DemoConfig` coercion, identity panel, visual instance marker, default `'table'` view, and core `mfe:*` event dispatch (`module-ready`, `update-header`).
+  - `DemoPreviewComponent` fully implemented as the standalone preview host with `size`, `view`, and `title` controls and `mfe:*` event console logging.
   - `@cobranza-apps/mfe-events` installed and `reflect-metadata` configured in `angular.json`.
 
 ## Current Work Focus
@@ -27,9 +27,8 @@ Executing `.agent/todos/20260803/20260803-todo-1.md` via the Critical Workflow â
 
 ## Immediate Next Steps
 
-1. Implement `DemoComponent` event dispatch and `shell:*` listeners per the spec.
-2. Implement `DemoPreviewComponent` controls (`size`, `view`, `title`) and `mfe:*` event logging.
-3. Proceed to subsequent Critical Workflow steps (implementation planning, code review, verification) for the remaining TODO tasks.
+1. Mark TODO Task 11 as `[DONE]` (Critical Workflow Step 4.6).
+2. Complete Critical Workflow Step 5: rename the TODO file with `-DONE` suffix, verify all changes are committed on `feat/mfe-demo-phase0`, and merge to `main`.
 
 ## Open Questions / Decisions Pending
 
