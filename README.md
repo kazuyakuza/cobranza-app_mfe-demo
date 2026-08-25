@@ -102,6 +102,8 @@ The standalone preview host (`DemoPreviewComponent`) at route `/` injects mock I
 
 To run inside the Shell, start the Shell separately and add a Footer entry with `moduleType: 'demo'`, pointing its federation config at `http://localhost:4201/remoteEntry.json` (remote name `mfe-demo`, exposed module `./Component`). See the Shell repository for its run instructions.
 
+**Theming:** `src/styles.scss` imports the shared theme via `@use '@cobranza-apps/ui/theme'`. This resolves because `angular.json` → `esbuild.options.stylePreprocessorOptions.includePaths` adds `node_modules` to the Sass include paths (required for the Angular esbuild builder, which does not include it by default).
+
 ## Federation Configuration
 
 `federation.config.js` configures this app as a Native Federation remote:

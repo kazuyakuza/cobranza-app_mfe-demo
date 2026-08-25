@@ -64,6 +64,7 @@
 						"styles": [
 							"src/styles.scss"
 						],
+						"_comment_stylePreprocessorOptions": "Required so that `@use '@cobranza-apps/ui/theme'` in src/styles.scss resolves from node_modules (Angular esbuild does not include node_modules in Sass include paths by default).",
 						"stylePreprocessorOptions": {
 							"includePaths": [
 								"node_modules"
