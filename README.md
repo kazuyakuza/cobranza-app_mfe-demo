@@ -218,6 +218,9 @@ See [`.agent/project-structure.md`](.agent/project-structure.md) for the maintai
 - [`docs/how-to-write-todo-files.md`](docs/how-to-write-todo-files.md) — guide for writing TODO files.
 - [`docs/how-to-set-up-git.md`](docs/how-to-set-up-git.md) — guide for Git setup.
 - [`docs/phase0-agent-notes.md`](docs/phase0-agent-notes.md) — Phase 0 boundaries and folder layout notes for AI agents.
+- [`docs/views-and-config.md`](docs/views-and-config.md) — the three views and how to select them via Footer `config` / `data` / `initialData`.
+- [`docs/actions-and-events.md`](docs/actions-and-events.md) — action buttons and which `mfe:*` events they fire.
+- [`docs/shell-integration-guide.md`](docs/shell-integration-guide.md) — event log & data viewer debugging surfaces and how the Shell can use `mfe-demo` as a test harness.
 
 ## For AI Agents
 
