@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   signal,
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CbaButtonComponent } from '@cobranza-apps/ui';
@@ -18,6 +19,7 @@ import {
 
 import { DemoComponent } from '../demo/demo.component';
 import { type DemoViewMode } from '../demo/demo-config';
+import { type DemoMinHeightReason } from '../demo/demo-min-height';
 
 const MOCK_INSTANCE_ID = 'demo-preview-0001';
 const MOCK_TABLE_ROWS = 5;
@@ -62,6 +64,14 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
   readonly tableRows = signal(MOCK_TABLE_ROWS);
   readonly profileJson = signal('{}');
 
+  @ViewChild(DemoComponent) private demoComponent?: DemoComponent;
+
+  readonly previewDeclaredMinHeightPx = signal<number | undefined>(undefined);
+  readonly debugMinHeightOverride = signal<number | undefined>(undefined);
+
+  readonly simulatedDragState = signal<'drag-start' | 'drag-end' | 'dropped' | undefined>(undefined);
+  readonly simulatedPreviewMode = signal<'collapsed' | undefined>(undefined);
+
   readonly data = computed<Record<string, unknown>>(() => ({
     view: this.view(),
     title: this.title() || undefined,
@@ -78,13 +88,25 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
     height: 400,
     isCollapsed: this.isCollapsed(),
     isFullscreen: this.isFullscreen(),
+    dragState: this.simulatedDragState(),
+    previewMode: this.simulatedPreviewMode(),
   }));
 
   private readonly mfeEventNames = Object.values(MFE_EVENTS);
 
   private readonly onMfeEvent = (event: Event): void => {
     if (!(event instanceof CustomEvent)) return;
+    if (event.type === MFE_EVENTS.UPDATE_MIN_HEIGHT) {
+      const payload = event.detail as { minHeightPx?: number };
+      if (typeof payload?.minHeightPx === 'number') {
+        this.previewDeclaredMinHeightPx.set(payload.minHeightPx);
+      }
+    }
     console.log('[demo-preview] captured', event.type, event.detail);
+  };
+
+  readonly redeclareMinHeight = (): void => {
+    this.demoComponent?.declareMinHeightForPreview('content-change', this.debugMinHeightOverride());
   };
 
   readonly emitModuleState = (): void => {
@@ -118,5 +140,15 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
     } catch {
       return undefined;
     }
+  }
+
+  private numberOrNull(value: string | null): number | undefined {
+    if (value === null || value === '') return undefined;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  private stringOrUndefined(value: string): string | undefined {
+    return value === '' ? undefined : value;
   }
 }

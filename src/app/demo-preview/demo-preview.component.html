@@ -57,6 +57,50 @@
       <cba-button size="sm" variant="secondary" (cbaClick)="emitVisibilityChanged(true)">Visible</cba-button>
       <cba-button size="sm" variant="secondary" (cbaClick)="emitVisibilityChanged(false)">Oculto</cba-button>
     </div>
+
+    <label class="demo-preview__field">
+      <span class="cba-text-small">Override min-height (debug, px)</span>
+      <input
+        type="number"
+        min="0"
+        max="1200"
+        [ngModel]="debugMinHeightOverride()"
+        (ngModelChange)="debugMinHeightOverride.set(numberOrNull($event))"
+        name="debugMinHeightOverride" />
+    </label>
+
+    <label class="demo-preview__field">
+      <span class="cba-text-small">Arrastre (dragState)</span>
+      <select
+        [ngModel]="simulatedDragState()"
+        (ngModelChange)="simulatedDragState.set(stringOrUndefined($event))"
+        name="simulatedDragState">
+        <option [ngValue]="undefined">—</option>
+        <option value="drag-start">drag-start</option>
+        <option value="drag-end">drag-end</option>
+        <option value="dropped">dropped</option>
+      </select>
+    </label>
+
+    <label class="demo-preview__field">
+      <span class="cba-text-small">Modo preview (previewMode)</span>
+      <select
+        [ngModel]="simulatedPreviewMode()"
+        (ngModelChange)="simulatedPreviewMode.set(stringOrUndefined($event))"
+        name="simulatedPreviewMode">
+        <option [ngValue]="undefined">—</option>
+        <option value="collapsed">collapsed</option>
+      </select>
+    </label>
+
+    <div class="demo-preview__simulators">
+      <cba-button size="sm" variant="secondary" (cbaClick)="redeclareMinHeight()">Reenviar min-height</cba-button>
+    </div>
+
+    <p class="demo-preview__min-height-readout cba-text-caption">
+      Min-height declarado actual:
+      {{ previewDeclaredMinHeightPx() === undefined ? '—' : previewDeclaredMinHeightPx() + ' px' }}
+    </p>
   </fieldset>
 
   <cba-demo

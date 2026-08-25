@@ -57,3 +57,9 @@
   align-items: center;
   margin-top: var(--cba-space-2);
 }
+
+.demo-preview__min-height-readout {
+  flex: 1 1 100%;
+  margin-top: var(--cba-space-2);
+  color: var(--cba-text-secondary);
+}
