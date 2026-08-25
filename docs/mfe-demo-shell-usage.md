@@ -52,7 +52,7 @@ Three ready-to-copy blocks (one per view). Each is a `WorkspaceModuleDefinition`
   config: {
     view: 'profile',
     title: 'Cliente demo',
-    profile: { nombre: 'Juan Pérez', dni: '30111222', email: 'juan@example.com', saldo: 15000, estado: 'activo' }
+    profile: { nombre: 'Juan Pérez', dni: '30111222', email: 'juan@example.com', saldo: 15000, estado: 'Activo' }
   }
 }
 ```
