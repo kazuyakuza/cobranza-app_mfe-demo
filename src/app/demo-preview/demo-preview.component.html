@@ -1,10 +1,41 @@
 <div class="demo-preview">
   <h1 class="cba-text-heading-md">Previsualización mfe-demo</h1>
-  <p class="cba-text-small">Host simulado — controles en desarrollo.</p>
+  <p class="cba-text-small">Host simulado — eventos visibles en consola.</p>
+
+  <fieldset class="demo-preview__controls">
+    <legend class="cba-text-caption">Controles del host simulado</legend>
+
+    <label class="demo-preview__field">
+      <span class="cba-text-small">Tamaño</span>
+      <select [(ngModel)]="size" name="size">
+        <option value="100%">Completo (100 %)</option>
+        <option value="50%">Mitad (50 %)</option>
+      </select>
+    </label>
+
+    <label class="demo-preview__field">
+      <span class="cba-text-small">Vista</span>
+      <select [(ngModel)]="view" name="view">
+        <option value="table">Tabla</option>
+        <option value="create-form">Alta</option>
+        <option value="profile">Perfil</option>
+      </select>
+    </label>
+
+    <label class="demo-preview__field">
+      <span class="cba-text-small">Título del header</span>
+      <input
+        type="text"
+        [(ngModel)]="title"
+        name="title"
+        placeholder="Título para mfe:update-header" />
+    </label>
+  </fieldset>
+
   <cba-demo
     [moduleType]="'demo'"
     [instanceId]="instanceId()"
-    [size]="'100%'"
+    [size]="size()"
     [isCollapsed]="false"
     [isFullscreen]="false"
     [data]="data()" />

@@ -1,9 +1,30 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { CbaBadgeComponent } from '@cobranza-apps/ui';
-import { MFE_EVENTS, SCHEMA_VERSION, type ModuleSize } from '@cobranza-apps/mfe-events';
+import {
+  dispatchMfeEvent,
+  isShellEvent,
+  MFE_EVENTS,
+  SCHEMA_VERSION,
+  SHELL_EVENTS,
+  type ModuleReadyPayload,
+  type ModuleSize,
+  type ModuleStatePayload,
+  type ThemeChangedPayload,
+  type UpdateHeaderPayload,
+  type VisibilityChangedPayload,
+} from '@cobranza-apps/mfe-events';
 
 import { coerceDemoConfig } from './demo-config';
 import { DemoTableComponent } from './views/demo-table/demo-table.component';
+
+const DEFAULT_HEADER_TITLE = 'Demo';
 
 @Component({
   selector: 'cba-demo',
@@ -22,21 +43,14 @@ import { DemoTableComponent } from './views/demo-table/demo-table.component';
  *   driven by the opaque `data` input (coerced into `DemoConfig`).
  * - Owns only the body area — module chrome (header, drag handle, collapse,
  *   fullscreen, remove) belongs to the Shell / `@cobranza-apps/ui`.
- * - Must remain multi-instance safe: every piece of state is derived from
- *   inputs, no shared singletons.
- *
- * Identity panel:
- *   Displays moduleType, short instanceId (full on hover), current size,
- *   collapse/fullscreen flags, and active view label — all in Spanish.
- *
- * Visual instance marker:
- *   A coloured left border (CSS custom property `--demo-instance-marker`)
- *   derived from a stable hash of `instanceId`, so multiple co-located
- *   instances are visually distinct at a glance.
+ * - Dispatches `mfe:module-ready` and `mfe:update-header` on init.
+ * - Listens for `shell:module-state`, `shell:visibility-changed`, and
+ *   `shell:theme-changed`, filtering by `instanceId` (except theme, which is
+ *   global).
  *
  * Selector: `cba-demo`
  */
-export class DemoComponent {
+export class DemoComponent implements OnInit, OnDestroy {
   readonly moduleType = input.required<string>();
   readonly instanceId = input.required<string>();
   readonly size = input.required<ModuleSize>();
@@ -47,29 +61,81 @@ export class DemoComponent {
   readonly config = computed(() => coerceDemoConfig(this.data()));
   readonly view = computed(() => this.config().view ?? 'table');
 
-  /** Short form of `instanceId` shown in the identity panel (first 8 chars + ellipsis). */
   readonly shortInstanceId = computed(() => truncateInstanceId(this.instanceId()));
 
-  /** Stable 0–359 hue derived from `instanceId` for the visual instance marker. */
   readonly instanceHue = computed(() => this.hashString(this.instanceId()) % 360);
 
-  /** Inline style object applied to the root `.cba-demo` element to colour the left border. */
   readonly instanceColorStyle = computed(() => ({
     '--demo-instance-marker': `hsl(${this.instanceHue()}, 65%, 45%)`,
   }));
 
-  /** Spanish human-readable size mode shown in the identity panel. */
   readonly sizeLabelText = computed(() =>
     this.size() === '100%' ? 'Ancho completo (100 %)' : 'Mitad de ancho (50 %)',
   );
 
-  /** Spanish label for the active view shown in the identity panel. */
   readonly viewLabel = computed(() => viewModeToSpanishLabel(this.view()));
 
   readonly schemaVersion = SCHEMA_VERSION;
   readonly readyEventName = MFE_EVENTS.MODULE_READY;
+  readonly headerEventName = MFE_EVENTS.UPDATE_HEADER;
 
-  /** Stable 32-bit integer hash of an arbitrary string (used for the instance marker hue). */
+  private readonly onModuleState = (event: Event): void => {
+    if (!isShellEvent(event, SHELL_EVENTS.MODULE_STATE)) return;
+    if (event.detail.instanceId !== this.instanceId()) return;
+    console.log('[mfe-demo] received', SHELL_EVENTS.MODULE_STATE, event.detail);
+  };
+
+  private readonly onVisibilityChanged = (event: Event): void => {
+    if (!isShellEvent(event, SHELL_EVENTS.VISIBILITY_CHANGED)) return;
+    if (event.detail.instanceId !== this.instanceId()) return;
+    console.log('[mfe-demo] received', SHELL_EVENTS.VISIBILITY_CHANGED, event.detail);
+  };
+
+  private readonly onThemeChanged = (event: Event): void => {
+    if (!isShellEvent(event, SHELL_EVENTS.THEME_CHANGED)) return;
+    console.log('[mfe-demo] received', SHELL_EVENTS.THEME_CHANGED, event.detail);
+  };
+
+  ngOnInit(): void {
+    this.dispatchReadyEvent();
+    this.dispatchUpdateHeaderEvent();
+    this.attachShellListeners();
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener(SHELL_EVENTS.MODULE_STATE, this.onModuleState);
+    window.removeEventListener(SHELL_EVENTS.VISIBILITY_CHANGED, this.onVisibilityChanged);
+    window.removeEventListener(SHELL_EVENTS.THEME_CHANGED, this.onThemeChanged);
+  }
+
+  private dispatchReadyEvent(): void {
+    const payload: ModuleReadyPayload = {
+      schemaVersion: SCHEMA_VERSION,
+      moduleType: this.moduleType(),
+      instanceId: this.instanceId(),
+    };
+    console.log('[mfe-demo] dispatch', MFE_EVENTS.MODULE_READY, payload);
+    dispatchMfeEvent(MFE_EVENTS.MODULE_READY, payload);
+  }
+
+  private dispatchUpdateHeaderEvent(): void {
+    const payload: UpdateHeaderPayload = {
+      schemaVersion: SCHEMA_VERSION,
+      moduleType: this.moduleType(),
+      instanceId: this.instanceId(),
+      title: this.config().title ?? DEFAULT_HEADER_TITLE,
+      status: 'loaded',
+    };
+    console.log('[mfe-demo] dispatch', MFE_EVENTS.UPDATE_HEADER, payload);
+    dispatchMfeEvent(MFE_EVENTS.UPDATE_HEADER, payload);
+  }
+
+  private attachShellListeners(): void {
+    window.addEventListener(SHELL_EVENTS.MODULE_STATE, this.onModuleState);
+    window.addEventListener(SHELL_EVENTS.VISIBILITY_CHANGED, this.onVisibilityChanged);
+    window.addEventListener(SHELL_EVENTS.THEME_CHANGED, this.onThemeChanged);
+  }
+
   private hashString(value: string): number {
     let hash = 0;
     for (let index = 0; index < value.length; index += 1) {

@@ -2,3 +2,28 @@
   display: block;
   padding: 1rem;
 }
+
+.demo-preview__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--cba-space-3);
+  margin: var(--cba-space-3) 0;
+  padding: var(--cba-space-3);
+  border: 1px solid var(--cba-border-subtle);
+  border-radius: var(--cba-radius-md);
+}
+
+.demo-preview__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cba-space-1);
+}
+
+.demo-preview__field select,
+.demo-preview__field input {
+  padding: var(--cba-space-1) var(--cba-space-2);
+  border: 1px solid var(--cba-border-subtle);
+  border-radius: var(--cba-radius-sm);
+  background-color: var(--cba-bg-primary);
+}

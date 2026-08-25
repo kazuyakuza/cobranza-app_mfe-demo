@@ -33,6 +33,13 @@
         <strong>Vista:</strong> {{ viewLabel() }}
       </span>
     </div>
+
+    <div class="cba-demo__identity-row">
+      <span class="cba-text-caption">
+        <strong>Header:</strong> {{ headerEventName }} →
+        «{{ config().title ?? 'Demo' }}»
+      </span>
+    </div>
   </header>
 
   @switch (view()) {
