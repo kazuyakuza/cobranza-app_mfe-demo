@@ -71,7 +71,7 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
   /** Free-form JSON for the profile view — parsed into `data.profile`. */
   readonly profileJson = signal('{}');
 
-  /** Reference to the child `DemoComponent` — used to call `declareMinHeight` directly. */
+  /** Reference to the child `DemoComponent` — used to call `declareMinHeightForPreview` for forced re-dispatch. */
   @ViewChild(DemoComponent) private demoComponent?: DemoComponent;
 
   /** Last `minHeightPx` captured from `mfe:update-min-height` events. */
@@ -128,7 +128,7 @@ export class DemoPreviewComponent implements OnInit, OnDestroy {
 
   /** Forces `DemoComponent` to re-dispatch `mfe:update-min-height`, optionally with a debug override value. */
   readonly redeclareMinHeight = (): void => {
-    this.demoComponent?.declareMinHeight('content-change', this.debugMinHeightOverride());
+    this.demoComponent?.declareMinHeightForPreview('content-change', this.debugMinHeightOverride());
   };
 
   /** Dispatches a synthetic `shell:module-state` event scoped to the mock `instanceId`. */

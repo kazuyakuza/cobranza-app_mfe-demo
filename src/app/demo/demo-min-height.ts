@@ -29,7 +29,7 @@ const MIN_HEIGHT_DEFAULT_PX = 320;
  * Sensible default min-height preference per view, in CSS pixels.
  *
  * Pure function: no side effects, no DOM reads, no signals. Used by
- * `DemoComponent.declareMinHeight` to pick the value sent via
+ * `DemoComponent` to pick the value sent via
  * `mfe:update-min-height` (`MFE_EVENTS.UPDATE_MIN_HEIGHT`).
  */
 export function computeMinHeightPx(view: DemoViewMode): number {

@@ -197,14 +197,19 @@ export class DemoComponent implements OnInit, OnDestroy {
 
   /**
    * Computes and dispatches the preferred min-height for the current view.
-   * Called internally on init / view change / content change, and exposed
-   * for the standalone preview host via `declareMinHeight`.
+   * Called internally on init / view change / content change. Private to
+   * keep the public Shell-contract surface minimal.
    */
-  declareMinHeight(reason: DemoMinHeightReason, overridePx?: number): void {
+  private declareMinHeight(reason: DemoMinHeightReason, overridePx?: number): void {
     const view = this.view();
     const minHeightPx = overridePx !== undefined ? overridePx : computeMinHeightPx(view);
     this.lastDeclaredMinHeightPx.set(minHeightPx);
     this.dispatcher.updateMinHeight(minHeightPx, reason);
+  }
+
+  /** Exposed only for the standalone preview host; not part of the public Shell contract. */
+  declareMinHeightForPreview(reason: DemoMinHeightReason, overridePx?: number): void {
+    this.declareMinHeight(reason, overridePx);
   }
 
   ngOnInit(): void {
