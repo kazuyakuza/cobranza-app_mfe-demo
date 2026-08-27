@@ -1,0 +1,364 @@
+{
+  "$version": "v4",
+  "name": "mfe-demo",
+  "shared": [
+    {
+      "packageName": "@angular/common",
+      "outFileName": "_angular_common.GVOQTMWz_K.js",
+      "requiredVersion": "22.1.2",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "22.1.2"
+    },
+    {
+      "packageName": "@angular/common/http",
+      "outFileName": "_angular_common_http.qHZQ1FKrXo.js",
+      "requiredVersion": "22.1.2",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "22.1.2"
+    },
+    {
+      "packageName": "@angular/core",
+      "outFileName": "_angular_core.mB9vE9OK9N.js",
+      "requiredVersion": "22.1.2",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "22.1.2"
+    },
+    {
+      "packageName": "@angular/core/primitives/di",
+      "outFileName": "_angular_core_primitives_di.5T8mRLDCYM.js",
+      "requiredVersion": "22.1.2",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "22.1.2"
+    },
+    {
+      "packageName": "@angular/core/primitives/signals",
+      "outFileName": "_angular_core_primitives_signals.cDfveb58Lb.js",
+      "requiredVersion": "22.1.2",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "22.1.2"
+    },
+    {
+      "packageName": "@angular/core/rxjs-interop",
+      "outFileName": "_angular_core_rxjs_interop.oysRRn2UfZ.js",
+      "requiredVersion": "22.1.2",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "22.1.2"
+    },
+    {
+      "packageName": "@angular/forms",
+      "outFileName": "_angular_forms.fq7dPFX8Og.js",
+      "requiredVersion": "22.1.2",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "22.1.2"
+    },
+    {
+      "packageName": "@angular/platform-browser",
+      "outFileName": "_angular_platform_browser.66lojUA_Zu.js",
+      "requiredVersion": "22.1.2",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "22.1.2"
+    },
+    {
+      "packageName": "@cobranza-apps/mfe-events",
+      "outFileName": "_cobranza_apps_mfe_events.i367U62Wl0.js",
+      "requiredVersion": "^0.6.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "0.6.0"
+    },
+    {
+      "packageName": "@cobranza-apps/ui",
+      "outFileName": "_cobranza_apps_ui.6GD9kbgCTw.js",
+      "requiredVersion": "^0.19.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "0.19.0"
+    },
+    {
+      "packageName": "@fortawesome/angular-fontawesome",
+      "outFileName": "_fortawesome_angular_fontawesome.tVgsazkDsO.js",
+      "requiredVersion": "^5.1.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "5.1.0"
+    },
+    {
+      "packageName": "@fortawesome/fontawesome-svg-core",
+      "outFileName": "_fortawesome_fontawesome_svg_core.OG4RBaTh08.js",
+      "requiredVersion": "^7.3.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "7.3.1"
+    },
+    {
+      "packageName": "@fortawesome/free-solid-svg-icons",
+      "outFileName": "_fortawesome_free_solid_svg_icons.-GOftpnL88.js",
+      "requiredVersion": "^7.3.1",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "7.3.1"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap",
+      "outFileName": "_ng_bootstrap_ng_bootstrap.mO3y7Kihd4.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/accordion",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_accordion.lFDU-1m3LG.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/alert",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_alert.C4f01FsjEU.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/carousel",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_carousel.xv2biO9QWk.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/collapse",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_collapse.RHy8bRSLbX.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/config",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_config.XoEiqbV-G7.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/datepicker",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_datepicker.1JA7cJfIBD.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/dropdown",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_dropdown.NMUaKCUnws.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/modal",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_modal.GyN-rTPePW.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/nav",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_nav.K8lmeqUjw2.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/offcanvas",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_offcanvas.ncEwSfbm5o.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/pagination",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_pagination.qk1irxeclP.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/popover",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_popover.OZ6IQbW1ie.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/progressbar",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_progressbar.ZphCcXOF-L.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/rating",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_rating.aLJt-QLZ28.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/scrollspy",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_scrollspy.yy4PJMQg1-.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/timepicker",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_timepicker.Gn-Vg-Q_Hf.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/toast",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_toast.X53r1IZcY5.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/tooltip",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_tooltip.3ks7J3wD1X.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "@ng-bootstrap/ng-bootstrap/typeahead",
+      "outFileName": "_ng_bootstrap_ng_bootstrap_typeahead.kjYzVRXa8v.js",
+      "requiredVersion": "^21.0.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "21.0.0"
+    },
+    {
+      "packageName": "rxjs",
+      "outFileName": "rxjs.LhnXcVk8TJ.js",
+      "requiredVersion": "~7.8.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "7.8.2"
+    },
+    {
+      "packageName": "rxjs/operators",
+      "outFileName": "rxjs_operators.q9touFVXa_.js",
+      "requiredVersion": "~7.8.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "7.8.2"
+    },
+    {
+      "packageName": "tslib",
+      "outFileName": "tslib.zuXWi8ItF8.js",
+      "requiredVersion": "^2.3.0",
+      "singleton": true,
+      "strictVersion": true,
+      "version": "2.8.1"
+    },
+    {
+      "singleton": false,
+      "strictVersion": false,
+      "version": "0.0.0",
+      "requiredVersion": "0.0.0",
+      "packageName": "@nf-internal/chunk-EZIKX2C5",
+      "outFileName": "chunk-EZIKX2C5.js"
+    },
+    {
+      "singleton": false,
+      "strictVersion": false,
+      "version": "0.0.0",
+      "requiredVersion": "0.0.0",
+      "packageName": "@nf-internal/chunk-RJD7D2ZM",
+      "outFileName": "chunk-RJD7D2ZM.js"
+    },
+    {
+      "singleton": false,
+      "strictVersion": false,
+      "version": "0.0.0",
+      "requiredVersion": "0.0.0",
+      "packageName": "@nf-internal/chunk-72YGRQ3H",
+      "outFileName": "chunk-72YGRQ3H.js"
+    },
+    {
+      "singleton": false,
+      "strictVersion": false,
+      "version": "0.0.0",
+      "requiredVersion": "0.0.0",
+      "packageName": "@nf-internal/chunk-D6CVO4OX",
+      "outFileName": "chunk-D6CVO4OX.js"
+    },
+    {
+      "singleton": false,
+      "strictVersion": false,
+      "version": "0.0.0",
+      "requiredVersion": "0.0.0",
+      "packageName": "@nf-internal/chunk-XO7DRSRO",
+      "outFileName": "chunk-XO7DRSRO.js"
+    },
+    {
+      "singleton": false,
+      "strictVersion": false,
+      "version": "0.0.0",
+      "requiredVersion": "0.0.0",
+      "packageName": "@nf-internal/chunk-LTP7LB7E",
+      "outFileName": "chunk-LTP7LB7E.js"
+    },
+    {
+      "singleton": false,
+      "strictVersion": false,
+      "version": "0.0.0",
+      "requiredVersion": "0.0.0",
+      "packageName": "@nf-internal/chunk-NW3EJ62L",
+      "outFileName": "chunk-NW3EJ62L.js"
+    },
+    {
+      "singleton": false,
+      "strictVersion": false,
+      "version": "0.0.0",
+      "requiredVersion": "0.0.0",
+      "packageName": "@nf-internal/chunk-PZNONLPT",
+      "outFileName": "chunk-PZNONLPT.js"
+    }
+  ],
+  "exposes": [
+    {
+      "key": "./Component",
+      "outFileName": "Component-CAS5JYGL.js"
+    }
+  ]
+}
