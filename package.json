@@ -1,12 +1,13 @@
 {
   "name": "mfe-demo",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": false,
   "description": "Demo / placeholder / reference Native Federation remote (Angular 22) for the Cobranza App Company Back-office Shell.",
   "scripts": {
     "ng": "ng",
     "serve": "ng serve",
-    "build": "ng build"
+    "build": "ng build",
+    "build:gh-pages": "ng build --base-href /cobranza-app_mfe-demo/"
   },
   "dependencies": {
     "@angular/animations": "22.1.2",
