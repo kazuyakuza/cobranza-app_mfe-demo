@@ -1,7 +1,7 @@
 {
   "name": "mfe-demo",
-  "version": "0.3.0",
-  "private": true,
+  "version": "0.3.1",
+  "private": false,
   "description": "Demo / placeholder / reference Native Federation remote (Angular 22) for the Cobranza App Company Back-office Shell.",
   "scripts": {
     "ng": "ng",

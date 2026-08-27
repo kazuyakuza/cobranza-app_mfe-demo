@@ -97,7 +97,7 @@ export class DemoProfileComponent {
   readonly estadoValue = computed(() => this.estadoField()?.value ?? '—');
 
   private buildFields(profile: Record<string, unknown> | undefined): DemoProfileField[] {
-    const source = isPlainObject(profile) ? profile : DEFAULT_PROFILE;
+    const source = isPlainObject(profile) && Object.keys(profile).length > 0 ? profile : DEFAULT_PROFILE;
     return Object.entries(source).map(([key, value]) => ({
       label: PROFILE_LABELS[key] ?? capitalize(key),
       value: String(value ?? ''),

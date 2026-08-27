@@ -15,6 +15,6 @@ module.exports = withNativeFederation({
     'rxjs/webSocket',
   ],
   shared: {
-    ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto', includeSecondaries: false }),
+    ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto', includeSecondaries: true }),
   },
 });
